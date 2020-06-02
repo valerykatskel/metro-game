@@ -14,22 +14,6 @@
         Готово
       </button>
       <hr />
-      <table id="metro-lines-settings">
-        <tr>
-          <th>Линии метро</th>
-          <th>Показать станции</th>
-          <th>Показать линию</th>
-        </tr>
-        <tr v-for="(item, index) in metroData" :key="index">
-          <td>{{ item.name }}</td>
-          <td style="text-align: center">
-            <input v-model="item.markersVisible" type="checkbox" />
-          </td>
-          <td style="text-align: center">
-            <input v-model="item.polyline.visible" type="checkbox" />
-          </td>
-        </tr>
-      </table>
     </div>
     <l-map
       ref="map"
@@ -38,6 +22,8 @@
       :center="center"
       :min-zoom="minZoom"
       :max-zoom="maxZoom"
+      :bounds="bounds"
+      :max-bounds="maxBounds"
       style="height: 500px; width: 100%"
     >
       <l-control-layers
@@ -55,7 +41,7 @@
         :token="token"
         layer-type="base"
       />
-      <l-control-zoom :position="zoomPosition" />
+
       <l-control-attribution
         :position="attributionPosition"
         :prefix="attributionPrefix"
@@ -69,7 +55,24 @@
         :draggable="marker.draggable"
         :lat-lng.sync="marker.position"
         :icon="marker.icon"
-      ></l-marker>
+      >
+        <l-tooltip :content="createUserMarkerTooltip(marker.position)" />
+
+        <l-icon
+          :icon-size="dynamicSize"
+          :icon-anchor="dynamicAnchor"
+          :icon-url="marker.icon"
+          :className="marker.className"
+        ></l-icon>
+      </l-marker>
+
+      <l-polyline
+        v-if="markersLine.length > 1"
+        :lat-lngs="markersLine"
+        color="violet"
+        class="user-line"
+      />
+
       <l-layer-group
         v-for="item in metroData"
         :key="item.id"
@@ -84,12 +87,12 @@
             :visible="marker.visible"
             :draggable="marker.draggable"
             :lat-lng="marker.position"
-            @click="alert(marker)"
           >
+            <l-tooltip :content="marker.tooltip" />
             <l-icon
               :icon-size="dynamicSize"
               :icon-anchor="dynamicAnchor"
-              icon-url="./images/metro-marker.png"
+              :icon-url="marker.icon"
               :className="marker.className"
             ></l-icon>
           </l-marker>
@@ -98,6 +101,7 @@
           :lat-lngs="item.polyline.points"
           :visible="item.polyline.visible"
           :color="item.polyline.color"
+          class="metro-line"
         />
       </l-layer-group>
     </l-map>
@@ -115,7 +119,7 @@ import {
   LMarker,
   LPolyline,
   LLayerGroup,
-  LControlZoom,
+  LTooltip,
   LControlAttribution,
   LControlScale,
   LControlLayers,
@@ -150,7 +154,7 @@ const tileProviders = [
   },
   {
     name: "MapBox light-v9",
-    visible: false,
+    visible: true,
 
     attribution: "&copy; MapBox",
     url:
@@ -205,13 +209,13 @@ const tileProviders = [
   },
   {
     name: "Stamen Watercolor",
-    visible: true,
+    visible: false,
     url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
     attribution: "Stamen Watercolor"
   }
 ];
 
-const markers1 = [
+const stations = [
   {
     id: 110,
     line: 1,
@@ -220,6 +224,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -230,6 +235,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -240,6 +246,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -250,6 +257,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -260,6 +268,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -270,6 +279,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -280,6 +290,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -290,6 +301,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -300,6 +312,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -310,6 +323,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -320,6 +334,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -330,6 +345,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -340,6 +356,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -350,6 +367,7 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
   },
   {
@@ -360,30 +378,8 @@ const markers1 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/blue-marker.png",
     className: "stations-line-1"
-  },
-  {
-    id: 125,
-    line: 1,
-    tooltip: "Смоленская",
-    position: { lat: 53.951108, lng: 27.706165 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  }
-];
-
-const markers2 = [
-  {
-    id: 209,
-    line: 2,
-    tooltip: "Шабаны",
-    position: { lat: 53.846431, lng: 27.708997 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
   },
   {
     id: 210,
@@ -393,6 +389,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -403,6 +400,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -413,6 +411,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -423,6 +422,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -433,6 +433,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -443,6 +444,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -453,6 +455,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -463,6 +466,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -473,6 +477,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -483,6 +488,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -493,6 +499,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -503,6 +510,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -513,6 +521,7 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
   {
@@ -523,21 +532,9 @@ const markers2 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/red-marker.png",
     className: "stations-line-2"
   },
-  {
-    id: 224,
-    line: 2,
-    tooltip: "Красный Бор",
-    position: { lat: 53.90937, lng: 27.416271 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  }
-];
-
-const markers3 = [
   {
     id: 310,
     line: 3,
@@ -546,6 +543,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -556,6 +554,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -566,6 +565,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -576,6 +576,7 @@ const markers3 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -586,6 +587,7 @@ const markers3 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -596,6 +598,7 @@ const markers3 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -606,6 +609,7 @@ const markers3 = [
     active: true,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -616,6 +620,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -626,6 +631,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -636,6 +642,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -646,6 +653,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -656,6 +664,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -666,6 +675,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   },
   {
@@ -676,6 +686,7 @@ const markers3 = [
     active: false,
     draggable: false,
     visible: true,
+    icon: "./images/green-marker.png",
     className: "stations-line-3"
   }
 ];
@@ -688,7 +699,7 @@ export default {
     LMarker,
     LPolyline,
     LLayerGroup,
-    LControlZoom,
+    LTooltip,
     LControlAttribution,
     LControlScale,
     LControlLayers,
@@ -708,8 +719,9 @@ export default {
       markers: [],
       mapScreenshot: "",
       zoom: 11,
-      minZoom: 1,
-      maxZoom: 20,
+      distanceBetweenStantions: 0.2,
+      minZoom: 11,
+      maxZoom: 15,
       zoomPosition: "topleft",
       attributionPosition: "bottomright",
       layersPosition: "topright",
@@ -718,28 +730,30 @@ export default {
       Positions: ["topleft", "topright", "bottomleft", "bottomright"],
       tileProviders: tileProviders,
       userStationsCount: 14,
-      iconSize: 32,
-      polylines: [
-        {
-          id: "p1",
-          points: [
-            { lat: 37.772, lng: -122.214 },
-            { lat: 21.291, lng: -157.821 },
-            { lat: -18.142, lng: -181.569 },
-            { lat: -27.467, lng: -206.973 }
-          ],
-          visible: true
-        }
-      ],
+      iconSize: 20,
+      iconAnchor: [20, 51],
+      // cell size = 7x5 [66x35]
+      minLat: 53.8058,
+      maxLat: 53.9808,
+      minLng: 27.382,
+      maxLng: 27.844,
+      bounds: latLngBounds([
+        [53.8058, 27.382],
+        [53.9808, 27.844]
+      ]),
+      maxBounds: latLngBounds([
+        [53.8058, 27.382],
+        [53.9808, 27.844]
+      ]),
       metroData: [
         {
           id: "l1",
           name: "Московская линия",
-          markers: markers1,
+          markers: this.getStations1Coords(),
           polyline: {
-            points: this.getLineCoords(1),
+            points: this.getLine1Coords(),
             visible: true,
-            color: "blue"
+            color: "#051BA8"
           },
           visible: true,
           markersVisible: true
@@ -747,11 +761,11 @@ export default {
         {
           id: "l2",
           name: "Заводская линия",
-          markers: markers2,
+          markers: this.getStations2Coords(),
           polyline: {
-            points: this.getLineCoords(2),
+            points: this.getLine2Coords(),
             visible: true,
-            color: "red"
+            color: "#FF0000"
           },
           visible: true,
           markersVisible: true
@@ -759,11 +773,11 @@ export default {
         {
           id: "l3",
           name: "Зеленолугская линия",
-          markers: markers3,
+          markers: this.getStations3Coords(),
           polyline: {
-            points: this.getLineCoords(3),
+            points: this.getLine3Coords(),
             visible: true,
-            color: "green"
+            color: "#83A801"
           },
           visible: true,
           markersVisible: true
@@ -774,6 +788,9 @@ export default {
   methods: {
     alert(item) {
       alert("this is " + JSON.stringify(item));
+    },
+    createUserMarkerTooltip: function(pos) {
+      return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
     getScreenShot: function() {
       const map = this.$refs.map.mapObject;
@@ -810,16 +827,26 @@ export default {
     putimage: function(src) {
       console.log(src);
     },
+    getLatLngForUserMarker: function() {
+      const latDelta = this.maxLat - this.minLat;
+      const lngDelta = this.maxLng - this.minLng;
+      const rndLat = Math.random() * latDelta;
+      const rndLng = Math.random() * lngDelta;
+      const lat = this.minLat + rndLat;
+      const lng = this.minLng + rndLng;
+      return { lat, lng };
+    },
     addMarker: function() {
       const newMarker = {
         id: this.markers.length + 1,
         line: -1,
-        position: { lat: 53.94, lng: 27.55193 },
-        active: false,
+        position: this.getLatLngForUserMarker(),
+        active: true,
         draggable: true,
-        visible: true
+        visible: true,
+        //icon: "./images/green-marker.png",
+        className: "stations-line-3"
       };
-
       this.markers.push(newMarker);
     },
     removeLast: function() {
@@ -840,78 +867,46 @@ export default {
       console.log(bounds);
       //this.bounds = bounds;
     },
-    getLineCoords: function(lineNumber) {
-      if (lineNumber === 1)
-        return [
-          { lat: 53.8498337, lng: 27.4747816 },
-          { lat: 53.8645777, lng: 27.4860214 },
-          { lat: 53.8766884, lng: 27.4969447 },
-          { lat: 53.8861937, lng: 27.5133705 },
-          { lat: 53.885906, lng: 27.5406861 },
-          { lat: 53.8926399, lng: 27.5476491 },
-          { lat: 53.902129, lng: 27.5621384 },
-          { lat: 53.909505, lng: 27.5762415 },
-          { lat: 53.9158972, lng: 27.584213 },
-          { lat: 53.9217671, lng: 27.5992227 },
-          { lat: 53.9241679, lng: 27.6133525 },
-          { lat: 53.9279268, lng: 27.6276219 },
-          { lat: 53.9344645, lng: 27.651279 },
-          { lat: 53.9384972, lng: 27.6657629 },
-          { lat: 53.9453522, lng: 27.6878643 },
-          { lat: 53.951108, lng: 27.706165 }
-        ];
-      if (lineNumber === 2)
-        return [
-          { lat: 53.846431, lng: 27.708997 },
-          { lat: 53.8620975, lng: 27.6737612 },
-          { lat: 53.8690757, lng: 27.6485592 },
-          { lat: 53.8762394, lng: 27.628963 },
-          { lat: 53.8900888, lng: 27.6144147 },
-          { lat: 53.8899908, lng: 27.5861388 },
-          { lat: 53.8939772, lng: 27.5706518 },
-          { lat: 53.9008743, lng: 27.5618005 },
-          { lat: 53.9057729, lng: 27.5539362 },
-          { lat: 53.9053463, lng: 27.5392082 },
-          { lat: 53.90674, lng: 27.5226456 },
-          { lat: 53.9096567, lng: 27.4970198 },
-          { lat: 53.9084275, lng: 27.4793816 },
-          { lat: 53.9062691, lng: 27.4539918 },
-          { lat: 53.9068364, lng: 27.4377001 },
-          { lat: 53.90937, lng: 27.416271 }
-        ];
+    getStations1Coords: () => stations.filter(el => el.line === 1),
 
-      if (lineNumber === 3) {
-        return [
-          { lat: 53.843596, lng: 27.534163 },
-          { lat: 53.850185, lng: 27.5367486 },
-          { lat: 53.8658904, lng: 27.5434113 },
-          { lat: 53.8777352, lng: 27.5495803 },
-          { lat: 53.8897063, lng: 27.5474668 },
-          { lat: 53.8964713, lng: 27.5379986 },
-          { lat: 53.9046542, lng: 27.5402731 },
-          { lat: 53.9122399, lng: 27.5459996 },
-          { lat: 53.9176096, lng: 27.5566936 },
-          { lat: 53.921328, lng: 27.5676048 },
-          { lat: 53.9317801, lng: 27.5774378 },
-          { lat: 53.9431831, lng: 27.5889498 },
-          { lat: 53.9495401, lng: 27.6066229 },
-          { lat: 53.9558141, lng: 27.6213241 }
-        ];
-      }
+    getStations2Coords: () => stations.filter(el => el.line === 2),
+
+    getStations3Coords: () => stations.filter(el => el.line === 3),
+
+    getLine1Coords: function() {
+      return this.getStations1Coords().map(el => el.position);
+    },
+
+    getLine2Coords: function() {
+      return this.getStations2Coords().map(el => el.position);
+    },
+
+    getLine3Coords: function() {
+      return this.getStations3Coords().map(el => el.position);
     }
   },
   computed: {
+    markersLine() {
+      if (this.markers.length === 0) {
+        return [];
+      } else {
+        return this.markers.map(el => el.position);
+      }
+    },
     dynamicSize() {
       return [this.iconSize, this.iconSize * 1.15];
     },
     dynamicAnchor() {
-      return [this.iconSize / 2, this.iconSize * 1.15];
+      return [this.iconSize / 2, this.iconSize / 2];
+    },
+    userMarkers() {
+      return this.markers.filter(el => el.line === -1);
     },
     userStationsLeft() {
-      return this.userStationsCount - this.markers.length;
+      return this.userStationsCount - this.userMarkers.length;
     },
     userStationAdded() {
-      return this.markers.length;
+      return this.userMarkers.length;
     },
     getStations1Line() {
       return this.markers.filter(el => el.line === 1);
@@ -924,13 +919,6 @@ export default {
     },
     getStationsUserLine() {
       return this.markers.filter(el => el.line === -1);
-    },
-    get1LineCoords() {
-      return this.markers
-        .filter(el => el.line === 1)
-        .map(el => {
-          return { ...el.position };
-        });
     }
   },
   mounted() {
@@ -949,7 +937,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 #metro-lines-settings {
   th {
     text-align: left;
@@ -957,5 +945,16 @@ export default {
 }
 .leaflet-control-simpleMapScreenshoter {
   border: none;
+}
+.leaflet-marker-icon {
+  &.stations-line-1,
+  &.stations-line-2,
+  &.stations-line-3 {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+.leaflet-interactive {
+  stroke-width: 6px;
 }
 </style>
