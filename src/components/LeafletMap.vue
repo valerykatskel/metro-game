@@ -1,8 +1,5 @@
 <template>
   <div>
-    {{ getStations1Line }}
-    <hr />
-    {{ get1LineCoords }}
     <div>
       <button v-if="userStationsLeft > 0" name="button" @click="addMarker">
         Добавить станцию метро (осталось {{ userStationsLeft }})
@@ -92,7 +89,7 @@
             <l-icon
               :icon-size="dynamicSize"
               :icon-anchor="dynamicAnchor"
-              icon-url="/images/metro-marker.png"
+              icon-url="./images/metro-marker.png"
               :className="marker.className"
             ></l-icon>
           </l-marker>
@@ -130,10 +127,50 @@ import "leaflet-simple-map-screenshoter";
 const tileProviders = [
   {
     name: "OpenStreetMap",
-    visible: true,
+    visible: false,
     attribution:
       '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  },
+  {
+    name: "MapBox satellite-streets-v9",
+    visible: false,
+
+    attribution: "&copy; MapBox",
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+  },
+  {
+    name: "MapBox streets-v9",
+    visible: false,
+
+    attribution: "&copy; MapBox",
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+  },
+  {
+    name: "MapBox light-v9",
+    visible: false,
+
+    attribution: "&copy; MapBox",
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+  },
+  {
+    name: "MapBox dark-v9",
+    visible: false,
+
+    attribution: "&copy; MapBox",
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+  },
+  {
+    name: "MapBox outdoors-v9",
+    visible: false,
+
+    attribution: "&copy; MapBox",
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
   },
   {
     name: "OpenTopoMap",
@@ -141,6 +178,36 @@ const tileProviders = [
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     attribution:
       'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  },
+  {
+    name: "Humanitarian",
+    visible: false,
+    url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+    attribution: "Humanitarian focused OSM base layer"
+  },
+  {
+    name: "Without labels",
+    visible: false,
+    url: "https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png",
+    attribution: "Mapnik map without labels"
+  },
+  {
+    name: "Wikimedia Maps",
+    visible: false,
+    url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
+    attribution: "Wikimedia Maps"
+  },
+  {
+    name: "Black & White map",
+    visible: false,
+    url: "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+    attribution: "Black & White map"
+  },
+  {
+    name: "Stamen Watercolor",
+    visible: true,
+    url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+    attribution: "Stamen Watercolor"
   }
 ];
 
@@ -148,8 +215,8 @@ const markers1 = [
   {
     id: 110,
     line: 1,
-    tooltip: "Малиновка",
-    position: { lat: 53.848379, lng: 27.474202 },
+    tooltip: "Малінаўка (Малиновка)",
+    position: { lat: 53.8498337, lng: 27.4747816 },
     active: true,
     draggable: false,
     visible: true,
@@ -158,8 +225,8 @@ const markers1 = [
   {
     id: 111,
     line: 1,
-    tooltip: "Петровщина",
-    position: { lat: 53.864788, lng: 27.485843 },
+    tooltip: "Пятроўшчына (Петровщина)",
+    position: { lat: 53.8645777, lng: 27.4860214 },
     active: true,
     draggable: false,
     visible: true,
@@ -168,8 +235,8 @@ const markers1 = [
   {
     id: 112,
     line: 1,
-    tooltip: "Михалово",
-    position: { lat: 53.876945, lng: 27.497036 },
+    tooltip: "Міхалова (Михалово)",
+    position: { lat: 53.8766884, lng: 27.4969447 },
     active: true,
     draggable: false,
     visible: true,
@@ -178,8 +245,8 @@ const markers1 = [
   {
     id: 113,
     line: 1,
-    tooltip: "Грушевка",
-    position: { lat: 53.886562, lng: 27.514768 },
+    tooltip: "Грушаўка (Грушевка)",
+    position: { lat: 53.8861937, lng: 27.5133705 },
     active: true,
     draggable: false,
     visible: true,
@@ -188,8 +255,8 @@ const markers1 = [
   {
     id: 114,
     line: 1,
-    tooltip: "Институт Культуры",
-    position: { lat: 53.886053, lng: 27.540352 },
+    tooltip: "Інстытут Культуры (Институт Культуры)",
+    position: { lat: 53.885906, lng: 27.5406861 },
     active: true,
     draggable: false,
     visible: true,
@@ -198,8 +265,8 @@ const markers1 = [
   {
     id: 115,
     line: 1,
-    tooltip: "пл. Ленина",
-    position: { lat: 53.893524, lng: 27.548114 },
+    tooltip: "Плошча Леніна (Площадь Ленина)",
+    position: { lat: 53.8926399, lng: 27.5476491 },
     active: true,
     draggable: false,
     visible: true,
@@ -208,8 +275,8 @@ const markers1 = [
   {
     id: 116,
     line: 1,
-    tooltip: "Октябрьская",
-    position: { lat: 53.902263, lng: 27.56193 },
+    tooltip: "Кастрычніцкая (Октябрьская)",
+    position: { lat: 53.902129, lng: 27.5621384 },
     active: true,
     draggable: false,
     visible: true,
@@ -218,8 +285,8 @@ const markers1 = [
   {
     id: 117,
     line: 1,
-    tooltip: "пл. Победы",
-    position: { lat: 53.90927, lng: 27.57527 },
+    tooltip: "Плошча Перамогі (Площадь Победы)",
+    position: { lat: 53.909505, lng: 27.5762415 },
     active: true,
     draggable: false,
     visible: true,
@@ -228,8 +295,8 @@ const markers1 = [
   {
     id: 118,
     line: 1,
-    tooltip: "пл. Я. Коласа",
-    position: { lat: 53.915926, lng: 27.583759 },
+    tooltip: "Плошча Якуба Коласа (Площадь Якуба Коласа)",
+    position: { lat: 53.9158972, lng: 27.584213 },
     active: true,
     draggable: false,
     visible: true,
@@ -238,8 +305,8 @@ const markers1 = [
   {
     id: 119,
     line: 1,
-    tooltip: "Академия Наук",
-    position: { lat: 53.922401, lng: 27.600198 },
+    tooltip: "Акадэмія Навук (Академия Наук)",
+    position: { lat: 53.9217671, lng: 27.5992227 },
     active: true,
     draggable: false,
     visible: true,
@@ -248,8 +315,8 @@ const markers1 = [
   {
     id: 120,
     line: 1,
-    tooltip: "Парк Челюскинцев",
-    position: { lat: 53.924288, lng: 27.613143 },
+    tooltip: "Парк Чалюскінцаў (Парк Челюскинцев)",
+    position: { lat: 53.9241679, lng: 27.6133525 },
     active: true,
     draggable: false,
     visible: true,
@@ -258,8 +325,8 @@ const markers1 = [
   {
     id: 121,
     line: 1,
-    tooltip: "Московская",
-    position: { lat: 53.928084, lng: 27.627462 },
+    tooltip: "Маскоўская (Московская)",
+    position: { lat: 53.9279268, lng: 27.6276219 },
     active: true,
     draggable: false,
     visible: true,
@@ -268,8 +335,8 @@ const markers1 = [
   {
     id: 122,
     line: 1,
-    tooltip: "Восток",
-    position: { lat: 53.934605, lng: 27.651097 },
+    tooltip: "Усход (Восток)",
+    position: { lat: 53.9344645, lng: 27.651279 },
     active: true,
     draggable: false,
     visible: true,
@@ -278,8 +345,8 @@ const markers1 = [
   {
     id: 123,
     line: 1,
-    tooltip: "Борисовский тракт",
-    position: { lat: 53.93885, lng: 27.666206 },
+    tooltip: "Барысаўскі тракт (Борисовский тракт)",
+    position: { lat: 53.9384972, lng: 27.6657629 },
     active: true,
     draggable: false,
     visible: true,
@@ -288,8 +355,8 @@ const markers1 = [
   {
     id: 124,
     line: 1,
-    tooltip: "Уручье",
-    position: { lat: 53.945565, lng: 27.687676 },
+    tooltip: "Уручча (Уручье)",
+    position: { lat: 53.9453522, lng: 27.6878643 },
     active: true,
     draggable: false,
     visible: true,
@@ -321,8 +388,8 @@ const markers2 = [
   {
     id: 210,
     line: 2,
-    tooltip: "Могилевская",
-    position: { lat: 53.861798, lng: 27.673986 },
+    tooltip: "Магілеўская (Могилевская)",
+    position: { lat: 53.8620975, lng: 27.6737612 },
     active: true,
     draggable: false,
     visible: true,
@@ -331,8 +398,8 @@ const markers2 = [
   {
     id: 211,
     line: 2,
-    tooltip: "Автозаводская",
-    position: { lat: 53.868918, lng: 27.648105 },
+    tooltip: "Аўтазаводская (Автозаводская)",
+    position: { lat: 53.8690757, lng: 27.6485592 },
     active: true,
     draggable: false,
     visible: true,
@@ -341,8 +408,8 @@ const markers2 = [
   {
     id: 212,
     line: 2,
-    tooltip: "Партизанская",
-    position: { lat: 53.875353, lng: 27.629627 },
+    tooltip: "Партызанская (Партизанская)",
+    position: { lat: 53.8762394, lng: 27.628963 },
     active: true,
     draggable: false,
     visible: true,
@@ -351,8 +418,8 @@ const markers2 = [
   {
     id: 213,
     line: 2,
-    tooltip: "Тракторный завод",
-    position: { lat: 53.890123, lng: 27.614347 },
+    tooltip: "Трактарны завод (Тракторный завод)",
+    position: { lat: 53.8900888, lng: 27.6144147 },
     active: true,
     draggable: false,
     visible: true,
@@ -361,8 +428,8 @@ const markers2 = [
   {
     id: 214,
     line: 2,
-    tooltip: "Пролетарская",
-    position: { lat: 53.890372, lng: 27.586841 },
+    tooltip: "Пралетарская (Пролетарская)",
+    position: { lat: 53.8899908, lng: 27.5861388 },
     active: true,
     draggable: false,
     visible: true,
@@ -371,8 +438,8 @@ const markers2 = [
   {
     id: 215,
     line: 2,
-    tooltip: "Первомайская",
-    position: { lat: 53.89379, lng: 27.570949 },
+    tooltip: "Першамайская (Первомайская)",
+    position: { lat: 53.8939772, lng: 27.5706518 },
     active: true,
     draggable: false,
     visible: true,
@@ -381,8 +448,8 @@ const markers2 = [
   {
     id: 216,
     line: 2,
-    tooltip: "Купаловская",
-    position: { lat: 53.900798, lng: 27.561714 },
+    tooltip: "Купалаўская (Купаловская)",
+    position: { lat: 53.9008743, lng: 27.5618005 },
     active: true,
     draggable: false,
     visible: true,
@@ -391,8 +458,8 @@ const markers2 = [
   {
     id: 217,
     line: 2,
-    tooltip: "Немига",
-    position: { lat: 53.905732, lng: 27.554016 },
+    tooltip: "Няміга (Немига)",
+    position: { lat: 53.9057729, lng: 27.5539362 },
     active: true,
     draggable: false,
     visible: true,
@@ -401,8 +468,8 @@ const markers2 = [
   {
     id: 218,
     line: 2,
-    tooltip: "Фрунзенская",
-    position: { lat: 53.905408, lng: 27.539319 },
+    tooltip: "Фрунзенская (Фрунзенская)",
+    position: { lat: 53.9053463, lng: 27.5392082 },
     active: true,
     draggable: false,
     visible: true,
@@ -411,8 +478,8 @@ const markers2 = [
   {
     id: 219,
     line: 2,
-    tooltip: "Молодежная",
-    position: { lat: 53.906527, lng: 27.523617 },
+    tooltip: "Маладзежная (Молодежная)",
+    position: { lat: 53.90674, lng: 27.5226456 },
     active: true,
     draggable: false,
     visible: true,
@@ -421,8 +488,8 @@ const markers2 = [
   {
     id: 220,
     line: 2,
-    tooltip: "Пушкинская",
-    position: { lat: 53.909429, lng: 27.497251 },
+    tooltip: "Пушкінская (Пушкинская)",
+    position: { lat: 53.9096567, lng: 27.4970198 },
     active: true,
     draggable: false,
     visible: true,
@@ -431,8 +498,8 @@ const markers2 = [
   {
     id: 221,
     line: 2,
-    tooltip: "Спортивная",
-    position: { lat: 53.908315, lng: 27.480758 },
+    tooltip: "Спартыўная (Спортивная)",
+    position: { lat: 53.9084275, lng: 27.4793816 },
     active: true,
     draggable: false,
     visible: true,
@@ -441,8 +508,8 @@ const markers2 = [
   {
     id: 222,
     line: 2,
-    tooltip: "Кунцевщина",
-    position: { lat: 53.906007, lng: 27.45423 },
+    tooltip: "Кунцаўшчына (Кунцевщина)",
+    position: { lat: 53.9062691, lng: 27.4539918 },
     active: true,
     draggable: false,
     visible: true,
@@ -451,8 +518,8 @@ const markers2 = [
   {
     id: 223,
     line: 2,
-    tooltip: "Каменная Горка",
-    position: { lat: 53.906602, lng: 27.437415 },
+    tooltip: "Каменная Горка (Каменная Горка)",
+    position: { lat: 53.9068364, lng: 27.4377001 },
     active: true,
     draggable: false,
     visible: true,
@@ -474,8 +541,8 @@ const markers3 = [
   {
     id: 310,
     line: 3,
-    tooltip: "Слуцкий гостинец",
-    position: { lat: 53.84226, lng: 27.533712 },
+    tooltip: "Слуцкі Гасцінец (Слуцкий Гостинец)",
+    position: { lat: 53.843596, lng: 27.534163 },
     active: false,
     draggable: false,
     visible: true,
@@ -484,8 +551,8 @@ const markers3 = [
   {
     id: 311,
     line: 3,
-    tooltip: "Неморшанский сад",
-    position: { lat: 53.850077, lng: 27.537596 },
+    tooltip: "Немаршанскі парк (Неморшанский парк)",
+    position: { lat: 53.850185, lng: 27.5367486 },
     active: false,
     draggable: false,
     visible: true,
@@ -494,8 +561,8 @@ const markers3 = [
   {
     id: 312,
     line: 3,
-    tooltip: "Аэродромная",
-    position: { lat: 53.867383, lng: 27.54679 },
+    tooltip: "Аэрадромная (Аэродромная)",
+    position: { lat: 53.8658904, lng: 27.5434113 },
     active: false,
     draggable: false,
     visible: true,
@@ -504,8 +571,8 @@ const markers3 = [
   {
     id: 313,
     line: 3,
-    tooltip: "Ковальская Слобода",
-    position: { lat: 53.87803, lng: 27.54978 },
+    tooltip: "Кавальская Слабада (Ковальская Слобода)",
+    position: { lat: 53.8777352, lng: 27.5495803 },
     active: true,
     draggable: false,
     visible: true,
@@ -514,8 +581,8 @@ const markers3 = [
   {
     id: 314,
     line: 3,
-    tooltip: "Вокзальная",
-    position: { lat: 53.8895, lng: 27.548013 },
+    tooltip: "Вакзальная (Вокзальная)",
+    position: { lat: 53.8897063, lng: 27.5474668 },
     active: true,
     draggable: false,
     visible: true,
@@ -524,8 +591,8 @@ const markers3 = [
   {
     id: 315,
     line: 3,
-    tooltip: "пл. Ф. Багущевича",
-    position: { lat: 53.896512, lng: 27.538089 },
+    tooltip: "Плошча Францішка Багушэвіча (Площадь Франтишка Богушевича)",
+    position: { lat: 53.8964713, lng: 27.5379986 },
     active: true,
     draggable: false,
     visible: true,
@@ -534,9 +601,79 @@ const markers3 = [
   {
     id: 316,
     line: 3,
-    tooltip: "Юбилейная пл.",
-    position: { lat: 53.904268, lng: 27.539945 },
+    tooltip: "Юбілейная плошча (Юбилейная площадь)",
+    position: { lat: 53.9046542, lng: 27.5402731 },
     active: true,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 317,
+    line: 3,
+    tooltip: "Прафсаюзная (Профсоюзная)",
+    position: { lat: 53.9122399, lng: 27.5459996 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 318,
+    line: 3,
+    tooltip: "Пярэспа (Переспа)",
+    position: { lat: 53.9176096, lng: 27.5566936 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 319,
+    line: 3,
+    tooltip: "Камароўская (Комаровская)",
+    position: { lat: 53.921328, lng: 27.5676048 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 320,
+    line: 3,
+    tooltip: "Парк Дружбы народаў (Парк Дружбы народов)",
+    position: { lat: 53.9317801, lng: 27.5774378 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 321,
+    line: 3,
+    tooltip: "Івана Мележа (Ивана Мележа)",
+    position: { lat: 53.9431831, lng: 27.5889498 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 322,
+    line: 3,
+    tooltip: "Зялены Луг (Зеленый Луг)",
+    position: { lat: 53.9495401, lng: 27.6066229 },
+    active: false,
+    draggable: false,
+    visible: true,
+    className: "stations-line-3"
+  },
+  {
+    id: 323,
+    line: 3,
+    tooltip: "Лагойская (Логойская)",
+    position: { lat: 53.9558141, lng: 27.6213241 },
+    active: false,
     draggable: false,
     visible: true,
     className: "stations-line-3"
@@ -561,7 +698,8 @@ export default {
     return {
       simpleMapScreenshoter: null,
       center: [53.9, 27.56667],
-      token: "your token if using mapbox",
+      token:
+        "pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg",
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
@@ -641,11 +779,13 @@ export default {
       const map = this.$refs.map.mapObject;
       const that = this;
       if (!this.simpleMapScreenshoter) {
-        this.simpleMapScreenshoter = window.L.simpleMapScreenshoter({
-          screenName: function() {
-            return new Date().toDateString();
-          }
-        }).addTo(map);
+        const pluginOptions = {
+          hidden: true, // hide screen icon
+          screenName: () => new Date().toDateString() // string or function
+        };
+        this.simpleMapScreenshoter = window.L.simpleMapScreenshoter(
+          pluginOptions
+        ).addTo(map);
       }
 
       this.simpleMapScreenshoter
@@ -674,7 +814,7 @@ export default {
       const newMarker = {
         id: this.markers.length + 1,
         line: -1,
-        position: { lat: 53.902263, lng: 27.56193 },
+        position: { lat: 53.94, lng: 27.55193 },
         active: false,
         draggable: true,
         visible: true
@@ -703,52 +843,59 @@ export default {
     getLineCoords: function(lineNumber) {
       if (lineNumber === 1)
         return [
-          { lat: 53.848379, lng: 27.474202 },
-          { lat: 53.864788, lng: 27.485843 },
-          { lat: 53.876945, lng: 27.497036 },
-          { lat: 53.886562, lng: 27.514768 },
-          { lat: 53.886053, lng: 27.540352 },
-          { lat: 53.893524, lng: 27.548114 },
-          { lat: 53.902263, lng: 27.56193 },
-          { lat: 53.90927, lng: 27.57527 },
-          { lat: 53.915926, lng: 27.583759 },
-          { lat: 53.922401, lng: 27.600198 },
-          { lat: 53.924288, lng: 27.613143 },
-          { lat: 53.928084, lng: 27.627462 },
-          { lat: 53.934605, lng: 27.651097 },
-          { lat: 53.93885, lng: 27.666206 },
-          { lat: 53.945565, lng: 27.687676 },
+          { lat: 53.8498337, lng: 27.4747816 },
+          { lat: 53.8645777, lng: 27.4860214 },
+          { lat: 53.8766884, lng: 27.4969447 },
+          { lat: 53.8861937, lng: 27.5133705 },
+          { lat: 53.885906, lng: 27.5406861 },
+          { lat: 53.8926399, lng: 27.5476491 },
+          { lat: 53.902129, lng: 27.5621384 },
+          { lat: 53.909505, lng: 27.5762415 },
+          { lat: 53.9158972, lng: 27.584213 },
+          { lat: 53.9217671, lng: 27.5992227 },
+          { lat: 53.9241679, lng: 27.6133525 },
+          { lat: 53.9279268, lng: 27.6276219 },
+          { lat: 53.9344645, lng: 27.651279 },
+          { lat: 53.9384972, lng: 27.6657629 },
+          { lat: 53.9453522, lng: 27.6878643 },
           { lat: 53.951108, lng: 27.706165 }
         ];
       if (lineNumber === 2)
         return [
           { lat: 53.846431, lng: 27.708997 },
-          { lat: 53.861798, lng: 27.673986 },
-          { lat: 53.868918, lng: 27.648105 },
-          { lat: 53.875353, lng: 27.629627 },
-          { lat: 53.890123, lng: 27.614347 },
-          { lat: 53.890372, lng: 27.586841 },
-          { lat: 53.89379, lng: 27.570949 },
-          { lat: 53.900798, lng: 27.561714 },
-          { lat: 53.905732, lng: 27.554016 },
-          { lat: 53.905408, lng: 27.539319 },
-          { lat: 53.906527, lng: 27.523617 },
-          { lat: 53.909429, lng: 27.497251 },
-          { lat: 53.908315, lng: 27.480758 },
-          { lat: 53.906007, lng: 27.45423 },
-          { lat: 53.906602, lng: 27.437415 },
+          { lat: 53.8620975, lng: 27.6737612 },
+          { lat: 53.8690757, lng: 27.6485592 },
+          { lat: 53.8762394, lng: 27.628963 },
+          { lat: 53.8900888, lng: 27.6144147 },
+          { lat: 53.8899908, lng: 27.5861388 },
+          { lat: 53.8939772, lng: 27.5706518 },
+          { lat: 53.9008743, lng: 27.5618005 },
+          { lat: 53.9057729, lng: 27.5539362 },
+          { lat: 53.9053463, lng: 27.5392082 },
+          { lat: 53.90674, lng: 27.5226456 },
+          { lat: 53.9096567, lng: 27.4970198 },
+          { lat: 53.9084275, lng: 27.4793816 },
+          { lat: 53.9062691, lng: 27.4539918 },
+          { lat: 53.9068364, lng: 27.4377001 },
           { lat: 53.90937, lng: 27.416271 }
         ];
 
       if (lineNumber === 3) {
         return [
-          { lat: 53.84226, lng: 27.533712 },
-          { lat: 53.850077, lng: 27.537596 },
-          { lat: 53.867383, lng: 27.54679 },
-          { lat: 53.87803, lng: 27.54978 },
-          { lat: 53.8895, lng: 27.548013 },
-          { lat: 53.896512, lng: 27.538089 },
-          { lat: 53.904268, lng: 27.539945 }
+          { lat: 53.843596, lng: 27.534163 },
+          { lat: 53.850185, lng: 27.5367486 },
+          { lat: 53.8658904, lng: 27.5434113 },
+          { lat: 53.8777352, lng: 27.5495803 },
+          { lat: 53.8897063, lng: 27.5474668 },
+          { lat: 53.8964713, lng: 27.5379986 },
+          { lat: 53.9046542, lng: 27.5402731 },
+          { lat: 53.9122399, lng: 27.5459996 },
+          { lat: 53.9176096, lng: 27.5566936 },
+          { lat: 53.921328, lng: 27.5676048 },
+          { lat: 53.9317801, lng: 27.5774378 },
+          { lat: 53.9431831, lng: 27.5889498 },
+          { lat: 53.9495401, lng: 27.6066229 },
+          { lat: 53.9558141, lng: 27.6213241 }
         ];
       }
     }
@@ -807,5 +954,8 @@ export default {
   th {
     text-align: left;
   }
+}
+.leaflet-control-simpleMapScreenshoter {
+  border: none;
 }
 </style>
