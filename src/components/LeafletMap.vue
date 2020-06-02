@@ -54,7 +54,6 @@
         :visible="marker.visible"
         :draggable="marker.draggable"
         :lat-lng.sync="marker.position"
-        :icon="marker.icon"
       >
         <l-tooltip :content="createUserMarkerTooltip(marker.position)" />
 
@@ -69,7 +68,7 @@
       <l-polyline
         v-if="markersLine.length > 1"
         :lat-lngs="markersLine"
-        color="violet"
+        color="#83A801"
         class="user-line"
       />
 
@@ -779,7 +778,7 @@ export default {
             visible: true,
             color: "#83A801"
           },
-          visible: true,
+          visible: false,
           markersVisible: true
         }
       ]
@@ -844,7 +843,7 @@ export default {
         active: true,
         draggable: true,
         visible: true,
-        //icon: "./images/green-marker.png",
+        icon: "./images/green-marker.png",
         className: "stations-line-3"
       };
       this.markers.push(newMarker);
