@@ -2,7 +2,7 @@
   <div>
     <div>
       <button v-if="userStationsLeft > 0" name="button" @click="addMarker">
-        Добавить станцию метро (осталось {{ userStationsLeft }})
+        Добавить станцию метро
       </button>
       <button v-if="userStationAdded > 0" name="button" @click="removeLast">
         Удалить последнюю
@@ -24,11 +24,11 @@
       :max-zoom="maxZoom"
       :bounds="bounds"
       :max-bounds="maxBounds"
-      style="height: 500px; width: 100%"
+      style="height: 480px; width: 100%; max-width: 720px; margin: 0 auto;"
     >
       <l-control-layers
         :position="layersPosition"
-        :collapsed="false"
+        :collapsed="true"
         :sort-layers="true"
       />
       <l-tile-layer
@@ -103,6 +103,15 @@
           class="metro-line"
         />
       </l-layer-group>
+      <l-control position="topLeft">
+        <div class="stations-count">
+          <span v-if="userStationsLeft > 0">Осталось точек</span>
+          <span v-else>Точек не осталось</span>
+          <span v-if="userStationsLeft > 0" class="label">{{
+            userStationsLeft
+          }}</span>
+        </div>
+      </l-control>
     </l-map>
     <a href="#" id="getScreenShot" @click="getScreenShot">Get Screenshot</a>
     <img v-if="mapScreenshot" :src="mapScreenshot" id="mapScreenshot" />
@@ -119,6 +128,7 @@ import {
   LPolyline,
   LLayerGroup,
   LTooltip,
+  LControl,
   LControlAttribution,
   LControlScale,
   LControlLayers,
@@ -699,6 +709,7 @@ export default {
     LPolyline,
     LLayerGroup,
     LTooltip,
+    LControl,
     LControlAttribution,
     LControlScale,
     LControlLayers,
@@ -955,5 +966,28 @@ export default {
 }
 .leaflet-interactive {
   stroke-width: 6px;
+}
+.stations-count {
+  margin: 10px 0 0 10px;
+  background: #fff;
+  border-radius: 3px;
+  height: 35px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  color: #1d1d1f;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+  .label {
+    display: inline-block;
+    margin-left: 8px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    background: #9fc226;
+    color: #fff;
+    line-height: 24px;
+  }
 }
 </style>
