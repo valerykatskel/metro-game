@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="map-holder">
     <popup-modal v-if="showPopup" @onClosePopup="showPopup = false">
       <p slot="header">Ваша линия готова</p>
     </popup-modal>
@@ -24,7 +24,7 @@
       :max-zoom="maxZoom"
       :bounds="bounds"
       :max-bounds="maxBounds"
-      style="height: 480px; width: 100%; max-width: 720px; margin: 0 auto;"
+      style="height: 480px; width: 100%;"
       @click="onMapClick"
     >
       <l-control-layers
@@ -115,9 +115,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
+          <span v-if="userStationsLeft > 0" class="label">
+            {{ userStationsLeft }}
+          </span>
         </div>
       </l-control>
     </l-map>
@@ -1002,19 +1002,6 @@ export default {
     getStationsUserLine() {
       return this.markers.filter(el => el.line === -1);
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      //const map = this.$refs.map.mapObject;
-      /*var simpleMapScreenshoter = window.L.simpleMapScreenshoter({
-        hidden: true
-      }).addTo(map);*/
-      // window.L.simpleMapScreenshoter({
-      //   screenName: function() {
-      //     return new Date().toDateString();
-      //   }
-      // }).addTo(map);
-    });
   }
 };
 </script>
@@ -1063,5 +1050,15 @@ export default {
     color: #fff;
     line-height: 24px;
   }
+}
+#mapScreenshot {
+  width: 100%;
+  max-width: 720px;
+}
+
+#map-holder {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
 }
 </style>
