@@ -25,6 +25,7 @@
       :bounds="bounds"
       :max-bounds="maxBounds"
       style="height: 480px; width: 100%; max-width: 720px; margin: 0 auto;"
+      @click="onMapClick"
     >
       <l-control-layers
         :position="layersPosition"
@@ -61,6 +62,7 @@
           :icon-size="dynamicSize"
           :icon-anchor="dynamicAnchor"
           :icon-url="marker.icon"
+          :icon-retina-url="marker.icon2x"
           :className="marker.className"
         ></l-icon>
       </l-marker>
@@ -103,13 +105,13 @@
           class="metro-line"
         />
       </l-layer-group>
-      <l-control position="topLeft">
+      <l-control position="topleft">
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
+          <span v-if="userStationsLeft > 0" class="label">
+            {{ userStationsLeft }}
+          </span>
         </div>
       </l-control>
     </l-map>
@@ -234,6 +236,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -245,6 +248,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -256,6 +260,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -267,6 +272,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -278,6 +284,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -289,6 +296,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -300,6 +308,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -311,6 +320,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -322,6 +332,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -333,6 +344,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -344,6 +356,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -355,6 +368,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -366,6 +380,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -377,6 +392,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -388,6 +404,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/blue-marker.png",
+    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -399,6 +416,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -410,6 +428,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -421,6 +440,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -432,6 +452,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -443,6 +464,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -454,6 +476,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -465,6 +488,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -476,6 +500,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -487,6 +512,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -498,6 +524,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -509,6 +536,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -520,6 +548,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -531,6 +560,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -542,6 +572,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/red-marker.png",
+    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -553,6 +584,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -564,6 +596,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -575,6 +608,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -586,6 +620,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -597,6 +632,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -608,6 +644,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -619,6 +656,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -630,6 +668,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -641,6 +680,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -652,6 +692,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -663,6 +704,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -674,6 +716,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -685,6 +728,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -696,6 +740,7 @@ const stations = [
     draggable: false,
     visible: true,
     icon: "./images/green-marker.png",
+    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   }
 ];
@@ -799,6 +844,10 @@ export default {
     alert(item) {
       alert("this is " + JSON.stringify(item));
     },
+    onMapClick: function(e) {
+      //console.log();
+      if (this.userStationsLeft > 0) this.addMarker(e);
+    },
     createUserMarkerTooltip: function(pos) {
       return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
@@ -846,11 +895,17 @@ export default {
       const lng = this.minLng + rndLng;
       return { lat, lng };
     },
-    addMarker: function() {
+    addMarker: function(e) {
+      let position;
+      if (e.latlng !== undefined) {
+        position = { ...e.latlng };
+      } else {
+        position = this.getLatLngForUserMarker();
+      }
       const newMarker = {
         id: this.markers.length + 1,
         line: -1,
-        position: this.getLatLngForUserMarker(),
+        position: position,
         active: true,
         draggable: true,
         visible: true,
