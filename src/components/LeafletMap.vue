@@ -1,9 +1,6 @@
 <template>
   <div>
     <div>
-      <button v-if="userStationsLeft > 0" name="button" @click="addMarker">
-        Добавить станцию метро
-      </button>
       <button v-if="userStationAdded > 0" name="button" @click="removeLast">
         Удалить последнюю
       </button>
@@ -109,9 +106,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">
-            {{ userStationsLeft }}
-          </span>
+          <span v-if="userStationsLeft > 0" class="label">{{
+            userStationsLeft
+          }}</span>
         </div>
       </l-control>
     </l-map>
