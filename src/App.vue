@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <section class="application-slide" id="s1">
+    <section v-if="showStart" class="application-slide" id="s1">
       <header></header>
       <main>
         <p>
@@ -8,11 +8,13 @@
           начали строительство третьей линии метро. Что же успели сделать
           метростроители за прошедшую пятилетку?
         </p>
-        <button @click="startGame()">Поехали</button>
+        <button @click="showStart = false">Поехали</button>
       </main>
       <footer></footer>
     </section>
-    <leaflet-map />
+    <section v-else class="application-slide" id="s2">
+      <leaflet-map />
+    </section>
   </div>
 </template>
 
@@ -23,6 +25,11 @@ export default {
   name: "App",
   components: {
     LeafletMap
+  },
+  data() {
+    return {
+      showStart: true
+    };
   }
 };
 </script>
