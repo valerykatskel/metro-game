@@ -1,5 +1,8 @@
 <template>
   <div>
+    <popup-modal v-if="showPopup" @onClosePopup="showPopup = false">
+      <p slot="header">Ваша линия готова</p>
+    </popup-modal>
     <div>
       <button v-if="userStationAdded > 0" name="button" @click="removeLast">
         Удалить последнюю
@@ -112,9 +115,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">
-            {{ userStationsLeft }}
-          </span>
+          <span v-if="userStationsLeft > 0" class="label">{{
+            userStationsLeft
+          }}</span>
         </div>
       </l-control>
     </l-map>
@@ -142,6 +145,8 @@ import {
 } from "vue2-leaflet";
 
 import "leaflet-simple-map-screenshoter";
+
+import PopupModal from "./PopupModal";
 
 const tileProviders = [
   {
@@ -763,7 +768,8 @@ export default {
     LControlScale,
     LControlLayers,
     LIcon,
-    LCircleMarker
+    LCircleMarker,
+    PopupModal
   },
   data() {
     return {
@@ -845,7 +851,8 @@ export default {
           visible: false,
           markersVisible: true
         }
-      ]
+      ],
+      showPopup: false
     };
   },
   methods: {
@@ -922,6 +929,7 @@ export default {
         className: "stations-line-3"
       };
       this.markers.push(newMarker);
+      if (this.markers.length === this.userStationsCount) this.showPopup = true;
     },
     removeLast: function() {
       this.markers.pop();
