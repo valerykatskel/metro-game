@@ -79,21 +79,27 @@
         :name="item.name"
       >
         <l-layer-group :visible="item.markersVisible">
-          <l-marker
+          <l-circle-marker
+            v-for="marker in item.markers"
+            :key="marker.id"
+            :lat-lng="marker.position"
+            :visible="marker.visible"
+            :color="item.markersColor"
+            fillColor="#fff"
+            :fillOpacity="1.0"
+            :weight="1"
+            :radius="6"
+          >
+            <!-- <l-marker
             v-for="marker in item.markers"
             :key="marker.id"
             :visible="marker.visible"
             :draggable="marker.draggable"
             :lat-lng="marker.position"
-          >
+            >-->
             <l-tooltip :content="marker.tooltip" />
-            <l-icon
-              :icon-size="dynamicSize"
-              :icon-anchor="dynamicAnchor"
-              :icon-url="marker.icon"
-              :className="marker.className"
-            ></l-icon>
-          </l-marker>
+            <!-- </l-marker> -->
+          </l-circle-marker>
         </l-layer-group>
         <l-polyline
           :lat-lngs="item.polyline.points"
@@ -106,9 +112,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
+          <span v-if="userStationsLeft > 0" class="label">
+            {{ userStationsLeft }}
+          </span>
         </div>
       </l-control>
     </l-map>
@@ -131,7 +137,8 @@ import {
   LControlAttribution,
   LControlScale,
   LControlLayers,
-  LIcon
+  LIcon,
+  LCircleMarker
 } from "vue2-leaflet";
 
 import "leaflet-simple-map-screenshoter";
@@ -755,7 +762,8 @@ export default {
     LControlAttribution,
     LControlScale,
     LControlLayers,
-    LIcon
+    LIcon,
+    LCircleMarker
   },
   data() {
     return {
@@ -807,6 +815,7 @@ export default {
             visible: true,
             color: "#051BA8"
           },
+          markersColor: "#051BA8",
           visible: true,
           markersVisible: true
         },
@@ -819,6 +828,7 @@ export default {
             visible: true,
             color: "#FF0000"
           },
+          markersColor: "#FF0000",
           visible: true,
           markersVisible: true
         },
@@ -831,6 +841,7 @@ export default {
             visible: true,
             color: "#83A801"
           },
+          markersColor: "#83A801",
           visible: false,
           markersVisible: true
         }
@@ -894,8 +905,9 @@ export default {
     },
     addMarker: function(e) {
       let position;
+
       if (e.latlng !== undefined) {
-        position = { ...e.latlng };
+        position = [e.latlng.lat, e.latlng.lng];
       } else {
         position = this.getLatLngForUserMarker();
       }
@@ -1017,7 +1029,9 @@ export default {
   }
 }
 .leaflet-interactive {
-  stroke-width: 6px;
+  stroke-width: 4px;
+  width: 20px;
+  height: 20px;
 }
 .stations-count {
   margin: 10px 0 0 10px;
