@@ -115,9 +115,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
+          <span v-if="userStationsLeft > 0" class="label">
+            {{ userStationsLeft }}
+          </span>
         </div>
       </l-control>
     </l-map>
@@ -244,8 +244,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -256,8 +254,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -268,8 +264,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -280,8 +274,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -292,8 +284,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -304,8 +294,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -316,8 +304,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -328,8 +314,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -340,8 +324,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -352,8 +334,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -364,8 +344,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -376,8 +354,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -388,8 +364,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -400,8 +374,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -412,8 +384,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/blue-marker.png",
-    icon2x: "./images/blue-marker@2x.png",
     className: "stations-line-1"
   },
   {
@@ -424,8 +394,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -436,8 +404,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -448,8 +414,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -460,8 +424,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -472,8 +434,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -484,8 +444,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -496,8 +454,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -508,8 +464,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -520,8 +474,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -532,8 +484,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -544,8 +494,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -556,8 +504,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -568,8 +514,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -580,8 +524,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/red-marker.png",
-    icon2x: "./images/red-marker@2x.png",
     className: "stations-line-2"
   },
   {
@@ -592,8 +534,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -604,8 +544,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -616,8 +554,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -628,8 +564,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -640,8 +574,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -652,8 +584,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -664,8 +594,6 @@ const stations = [
     active: true,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -676,8 +604,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -688,8 +614,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -700,8 +624,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -712,8 +634,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -724,8 +644,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -736,8 +654,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   },
   {
@@ -748,8 +664,6 @@ const stations = [
     active: false,
     draggable: false,
     visible: true,
-    icon: "./images/green-marker.png",
-    icon2x: "./images/green-marker@2x.png",
     className: "stations-line-3"
   }
 ];
