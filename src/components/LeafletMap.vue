@@ -88,7 +88,7 @@
             fillColor="#fff"
             :fillOpacity="1.0"
             :weight="1"
-            :radius="6"
+            :radius="8"
           >
             <!-- <l-marker
             v-for="marker in item.markers"
@@ -112,9 +112,9 @@
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
+          <span v-if="userStationsLeft > 0" class="label">
+            {{ userStationsLeft }}
+          </span>
         </div>
       </l-control>
     </l-map>
