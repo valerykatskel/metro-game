@@ -1,20 +1,14 @@
 <template>
-  <div id="map-holder">
+  <div class="game-section">
+    <h2>Строим как надо</h2>
+    <p>
+      Две линии минского метро уже давно и надолго с нами, а вот станции третьей
+      линии мы еще можем успеть построить как надо) Разместите 14 новых станций
+      метро, так как это было бы удобно лично вам. Погнали!
+    </p>
     <popup-modal v-if="showPopup" @onClosePopup="showPopup = false">
       <p slot="header">Ваша линия готова</p>
     </popup-modal>
-    <div id="slide-01" v-show="showStart">
-      <button v-if="userStationAdded > 0" name="button" @click="removeLast">
-        Удалить последнюю
-      </button>
-      <button v-if="userStationAdded > 0" name="button" @click="removeAll">
-        Удалить все
-      </button>
-      <button v-if="userStationAdded >= 4" name="button" @click="showResults">
-        Готово
-      </button>
-      <hr />
-    </div>
     <l-map
       ref="map"
       :zoom.sync="zoom"
@@ -48,31 +42,6 @@
         :prefix="attributionPrefix"
       />
       <l-control-scale :imperial="imperial" />
-
-      <l-marker
-        v-for="marker in markers"
-        :key="marker.id"
-        :visible="marker.visible"
-        :draggable="marker.draggable"
-        :lat-lng.sync="marker.position"
-      >
-        <l-tooltip :content="createUserMarkerTooltip(marker.position)" />
-
-        <l-icon
-          :icon-size="dynamicSize"
-          :icon-anchor="dynamicAnchor"
-          :icon-url="marker.icon"
-          :icon-retina-url="marker.icon2x"
-          :className="marker.className"
-        ></l-icon>
-      </l-marker>
-
-      <l-polyline
-        v-if="markersLine.length > 1"
-        :lat-lngs="markersLine"
-        color="#83A801"
-        class="user-line"
-      />
 
       <l-layer-group
         v-for="item in metroData"
@@ -111,16 +80,55 @@
           class="metro-line"
         />
       </l-layer-group>
+
+      <l-layer-group>
+        <l-marker
+          v-for="marker in markers"
+          :key="marker.id"
+          :visible="marker.visible"
+          :draggable="marker.draggable"
+          :lat-lng.sync="marker.position"
+        >
+          <l-icon
+            :icon-size="dynamicSize"
+            :icon-anchor="dynamicAnchor"
+            :icon-url="marker.icon"
+            :icon-retina-url="marker.icon2x"
+            :className="marker.className"
+          >
+            <span>{{ marker.id }}</span>
+          </l-icon>
+        </l-marker>
+        <l-polyline
+          v-if="markersLine.length > 1"
+          :lat-lngs="markersLine"
+          color="#83A801"
+          class="user-line"
+        />
+      </l-layer-group>
+
       <l-control position="topleft">
         <div class="stations-count">
           <span v-if="userStationsLeft > 0">Осталось точек</span>
           <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">
-            {{ userStationsLeft }}
-          </span>
+          <span v-if="userStationsLeft > 0" class="label">{{
+            userStationsLeft
+          }}</span>
         </div>
       </l-control>
     </l-map>
+
+    <div v-if="userStationAdded > 0" class="game-actions">
+      <button name="button" @click="removeLast">Удалить последнюю</button>
+      <button name="button" @click="removeAll">Удалить все</button>
+      <button
+        v-if="userStationAdded >= 4"
+        name="button green"
+        @click="showResults"
+      >
+        Готово
+      </button>
+    </div>
     <a href="#" id="getScreenShot" @click="getScreenShot">Get Screenshot</a>
     <img v-if="mapScreenshot" :src="mapScreenshot" id="mapScreenshot" />
   </div>
@@ -766,8 +774,7 @@ export default {
           markersVisible: true
         }
       ],
-      showPopup: false,
-      showStart: true
+      showPopup: false
     };
   },
   methods: {
@@ -841,7 +848,7 @@ export default {
         draggable: true,
         visible: true,
         icon: "./images/green-marker.png",
-        className: "stations-line-3"
+        className: "user-marker"
       };
       this.markers.push(newMarker);
       if (this.markers.length === this.userStationsCount) this.showPopup = true;
@@ -966,14 +973,62 @@ export default {
     line-height: 24px;
   }
 }
+.user-marker {
+  span {
+    display: inline-block;
+    width: 20px;
+    box-sizing: border-box;
+    height: 20px;
+    font-size: 9px;
+    line-height: 12px;
+    font-family: Arial;
+    border-radius: 50%;
+    border: 4px solid #83a801;
+    background-color: #fff;
+  }
+}
 #mapScreenshot {
   width: 100%;
   max-width: 720px;
 }
 
-#map-holder {
+.game-section {
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
+  background: #fff;
+  padding: 30px;
+
+  h2 {
+    text-align: left;
+    margin: 0;
+    font-size: 35px;
+    line-height: 41px;
+  }
+}
+.game-actions {
+  margin-top: 22px;
+  display: flex;
+
+  button {
+    width: 50%;
+    box-sizing: border-box;
+    height: 50px;
+    line-height: 50px;
+    color: #1d1d1f;
+    font-size: 15px;
+    padding: 0;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    border: none;
+    cursor: pointer;
+
+    &:first-child {
+      margin-right: 12px;
+    }
+    &:last-child {
+      margin-left: 12px;
+    }
+  }
 }
 </style>
