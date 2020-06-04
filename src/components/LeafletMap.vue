@@ -1,135 +1,136 @@
 <template>
-  <div class="game-section">
-    <h2>Строим как надо</h2>
-    <p>
-      Две линии минского метро уже давно и надолго с нами, а вот станции третьей
-      линии мы еще можем успеть построить как надо) Разместите 14 новых станций
-      метро, так как это было бы удобно лично вам. Погнали!
-    </p>
+  <div>
     <popup-modal v-if="showPopup" @onClosePopup="showPopup = false">
-      <p slot="header">Ваша линия готова</p>
+      <p slot="header">{{ inputParams.finalPopupText }}</p>
+      <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
-    <l-map
-      ref="map"
-      :zoom.sync="zoom"
-      :options="mapOptions"
-      :center="center"
-      :min-zoom="minZoom"
-      :max-zoom="maxZoom"
-      :bounds="bounds"
-      :max-bounds="maxBounds"
-      style="height: 480px; width: 100%;"
-      @click="onMapClick"
-    >
-      <l-control-layers
-        :position="layersPosition"
-        :collapsed="true"
-        :sort-layers="true"
-      />
-      <l-tile-layer
-        v-for="tileProvider in tileProviders"
-        :key="tileProvider.name"
-        :name="tileProvider.name"
-        :visible="tileProvider.visible"
-        :url="tileProvider.url"
-        :attribution="tileProvider.attribution"
-        :token="token"
-        layer-type="base"
-      />
-
-      <l-control-attribution
-        :position="attributionPosition"
-        :prefix="attributionPrefix"
-      />
-      <l-control-scale :imperial="imperial" />
-
-      <l-layer-group
-        v-for="item in metroData"
-        :key="item.id"
-        :visible.sync="item.visible"
-        layer-type="overlay"
-        :name="item.name"
+    <section v-if="!isGameOver">
+      <l-map
+        ref="map"
+        :zoom.sync="zoom"
+        :options="mapOptions"
+        :center="center"
+        :min-zoom="minZoom"
+        :max-zoom="maxZoom"
+        :bounds="bounds"
+        :max-bounds="maxBounds"
+        style="height: 480px; width: 100%;"
+        @click="onMapClick"
       >
-        <l-layer-group :visible="item.markersVisible">
-          <l-circle-marker
-            v-for="marker in item.markers"
-            :key="marker.id"
-            :lat-lng="marker.position"
-            :visible="marker.visible"
-            :color="item.markersColor"
-            fillColor="#fff"
-            :fillOpacity="1.0"
-            :weight="1"
-            :radius="8"
-          >
-            <!-- <l-marker
-            v-for="marker in item.markers"
+        <l-control-layers
+          :position="layersPosition"
+          :collapsed="true"
+          :sort-layers="true"
+        />
+        <l-tile-layer
+          v-for="tileProvider in tileProviders"
+          :key="tileProvider.name"
+          :name="tileProvider.name"
+          :visible="tileProvider.visible"
+          :url="tileProvider.url"
+          :attribution="tileProvider.attribution"
+          :token="token"
+          layer-type="base"
+        />
+
+        <l-control-attribution
+          :position="attributionPosition"
+          :prefix="attributionPrefix"
+        />
+        <l-control-scale :imperial="imperial" />
+
+        <l-layer-group
+          v-for="item in metroData"
+          :key="item.id"
+          :visible.sync="item.visible"
+          layer-type="overlay"
+          :name="item.name"
+        >
+          <l-layer-group :visible="item.markersVisible">
+            <l-circle-marker
+              v-for="marker in item.markers"
+              :key="marker.id"
+              :lat-lng="marker.position"
+              :visible="marker.visible"
+              :color="item.markersColor"
+              fillColor="#fff"
+              :fillOpacity="1.0"
+              :weight="1"
+              :radius="8"
+            >
+              <l-tooltip :content="marker.tooltip" />
+            </l-circle-marker>
+          </l-layer-group>
+          <l-polyline
+            :lat-lngs="item.polyline.points"
+            :visible="item.polyline.visible"
+            :color="item.polyline.color"
+            class="metro-line"
+          />
+        </l-layer-group>
+
+        <l-layer-group>
+          <l-marker
+            v-for="marker in markers"
             :key="marker.id"
             :visible="marker.visible"
             :draggable="marker.draggable"
-            :lat-lng="marker.position"
-            >-->
-            <l-tooltip :content="marker.tooltip" />
-            <!-- </l-marker> -->
-          </l-circle-marker>
-        </l-layer-group>
-        <l-polyline
-          :lat-lngs="item.polyline.points"
-          :visible="item.polyline.visible"
-          :color="item.polyline.color"
-          class="metro-line"
-        />
-      </l-layer-group>
-
-      <l-layer-group>
-        <l-marker
-          v-for="marker in markers"
-          :key="marker.id"
-          :visible="marker.visible"
-          :draggable="marker.draggable"
-          :lat-lng.sync="marker.position"
-        >
-          <l-icon
-            :icon-size="dynamicSize"
-            :icon-anchor="dynamicAnchor"
-            :icon-url="marker.icon"
-            :icon-retina-url="marker.icon2x"
-            :className="marker.className"
+            :lat-lng.sync="marker.position"
           >
-            <span>{{ marker.id }}</span>
-          </l-icon>
-        </l-marker>
-        <l-polyline
-          v-if="markersLine.length > 1"
-          :lat-lngs="markersLine"
-          color="#83A801"
-          class="user-line"
-        />
-      </l-layer-group>
+            <l-icon
+              :icon-size="dynamicSize"
+              :icon-anchor="dynamicAnchor"
+              :icon-url="marker.icon"
+              :icon-retina-url="marker.icon2x"
+              :className="marker.className"
+            >
+              <span>{{ marker.id }}</span>
+            </l-icon>
+          </l-marker>
+          <l-polyline
+            v-if="markersLine.length > 1"
+            :lat-lngs="markersLine"
+            color="#83A801"
+            class="user-line"
+          />
+        </l-layer-group>
 
-      <l-control position="topleft">
-        <div class="stations-count">
-          <span v-if="userStationsLeft > 0">Осталось точек</span>
-          <span v-else>Точек не осталось</span>
-          <span v-if="userStationsLeft > 0" class="label">{{
-            userStationsLeft
-          }}</span>
-        </div>
-      </l-control>
-    </l-map>
+        <l-control position="topleft">
+          <div class="stations-count">
+            <span v-if="userStationsLeft > 0">Осталось точек</span>
+            <span v-else>Точек не осталось</span>
+            <span v-if="userStationsLeft > 0" class="label">
+              {{ userStationsLeft }}
+            </span>
+          </div>
+        </l-control>
+      </l-map>
 
-    <div v-if="userStationAdded > 0" class="game-actions">
-      <button name="button" @click="removeLast">Удалить последнюю</button>
-      <button name="button" @click="removeAll">Удалить все</button>
-      <button
-        v-if="userStationAdded >= 4"
-        name="button green"
-        @click="showResults"
-      >
-        Готово
-      </button>
-    </div>
-    <a href="#" id="getScreenShot" @click="getScreenShot">Get Screenshot</a>
+      <div v-if="userStationAdded > 0" class="game-actions">
+        <button name="remove-last" class="button" @click="removeLast">
+          Удалить последнюю
+        </button>
+        <button
+          v-if="userStationAdded < 4"
+          name="remove-all"
+          class="button"
+          @click="removeAll"
+        >
+          Удалить все
+        </button>
+        <button
+          v-if="userStationAdded >= 4"
+          name="show-result"
+          class="button green"
+          @click="showResults"
+        >
+          Готово
+        </button>
+      </div>
+    </section>
+
+    <section v-else>Game over</section>
+
     <img v-if="mapScreenshot" :src="mapScreenshot" id="mapScreenshot" />
   </div>
 </template>
@@ -695,6 +696,8 @@ export default {
   },
   data() {
     return {
+      inputParams: {},
+      isGameOver: false,
       simpleMapScreenshoter: null,
       center: [53.9, 27.56667],
       token:
@@ -820,9 +823,6 @@ export default {
           alert(e.toString());
         });
     },
-    putimage: function(src) {
-      console.log(src);
-    },
     getLatLngForUserMarker: function() {
       const latDelta = this.maxLat - this.minLat;
       const lngDelta = this.maxLng - this.minLng;
@@ -860,17 +860,12 @@ export default {
       this.markers = this.markers.filter(el => el > -1);
     },
     showResults: function() {
-      console.log("game over!");
+      this.isGameOver = true;
     },
     removeMarker: function(index) {
       this.markers.splice(index, 1);
     },
 
-    fitPolyline: function() {
-      const bounds = latLngBounds(this.getStations(1).map(o => o.position));
-      console.log(bounds);
-      //this.bounds = bounds;
-    },
     getStations1Coords: () => stations.filter(el => el.line === 1),
 
     getStations2Coords: () => stations.filter(el => el.line === 2),
@@ -888,6 +883,12 @@ export default {
     getLine3Coords: function() {
       return this.getStations3Coords().map(el => el.position);
     }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.inputParams = window.inputData;
+    });
   },
   computed: {
     markersLine() {
@@ -1010,7 +1011,7 @@ export default {
   margin-top: 22px;
   display: flex;
 
-  button {
+  .button {
     width: 50%;
     box-sizing: border-box;
     height: 50px;
@@ -1028,6 +1029,10 @@ export default {
     }
     &:last-child {
       margin-left: 12px;
+    }
+    &.green {
+      background-color: #9fc226;
+      color: #fff;
     }
   }
 }

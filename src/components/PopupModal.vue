@@ -13,7 +13,7 @@
 
           <div class="modal-footer">
             <button class="modal-default-button" @click="$emit('onClosePopup')">
-              OK
+              <slot name="button"></slot>
             </button>
           </div>
         </div>
@@ -28,10 +28,12 @@
   z-index: 9998;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  display: table;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: opacity 0.3s ease;
 }
 
