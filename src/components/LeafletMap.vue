@@ -5,13 +5,18 @@
       <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
     <section v-if="!isGameOver">
+      <section class="section-header">
+        <h2>{{ inputParams.gameHeader }}</h2>
+        <div class="description" v-html="inputParams.gameText"></div>
+      </section>
       <l-map
         ref="map"
         :zoom.sync="zoom"
-        :options="mapOptions"
-        :center="center"
         :min-zoom="minZoom"
         :max-zoom="maxZoom"
+        :zoomAnimation="true"
+        :options="mapOptions"
+        :center="center"
         :bounds="bounds"
         :max-bounds="maxBounds"
         style="height: 480px; width: 100%;"
@@ -99,9 +104,9 @@
           <div class="stations-count">
             <span v-if="userStationsLeft > 0">Осталось точек</span>
             <span v-else>Точек не осталось</span>
-            <span v-if="userStationsLeft > 0" class="label">
-              {{ userStationsLeft }}
-            </span>
+            <span v-if="userStationsLeft > 0" class="label">{{
+              userStationsLeft
+            }}</span>
           </div>
         </l-control>
       </l-map>
@@ -124,14 +129,31 @@
           class="button green"
           @click="showResults"
         >
-          Готово
+          Готово, поехали
         </button>
       </div>
     </section>
 
-    <section v-else>Game over</section>
-
-    <img v-if="mapScreenshot" :src="mapScreenshot" id="mapScreenshot" />
+    <section v-else>
+      <section class="section-header">
+        <h2>{{ inputParams.finalHeader }}</h2>
+        <div class="description" v-html="inputParams.finalText"></div>
+        <div class="game-results">
+          <div class="result-map user-map">
+            <figure>
+              <img :src="mapScreenshot" alt />
+              <figcaption>{{ inputParams.userMapDescription }}</figcaption>
+            </figure>
+          </div>
+          <div class="result-map gov-map">
+            <figure>
+              <img :src="mapScreenshot" alt />
+              <figcaption>{{ inputParams.metroMapDescription }}</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </section>
   </div>
 </template>
 
@@ -805,22 +827,19 @@ export default {
       }
 
       this.simpleMapScreenshoter
-        .takeScreen("blob", {
-          caption: function() {
-            return "Hello world";
-          }
-        })
+        .takeScreen("blob")
         .then(blob => {
           const reader = new FileReader();
           reader.onload = function() {
             const dataUrl = reader.result;
             const base64 = `data:image/jpeg;base64, ${dataUrl.split(",")[1]}`;
             that.mapScreenshot = base64;
+            that.isGameOver = true;
           };
           reader.readAsDataURL(blob);
         })
         .catch(e => {
-          alert(e.toString());
+          console.error(e.toString());
         });
     },
     getLatLngForUserMarker: function() {
@@ -860,7 +879,11 @@ export default {
       this.markers = this.markers.filter(el => el > -1);
     },
     showResults: function() {
-      this.isGameOver = true;
+      this.zoom = 11;
+      const that = this;
+      setTimeout(function() {
+        that.getScreenShot();
+      }, 1000);
     },
     removeMarker: function(index) {
       this.markers.splice(index, 1);
@@ -1034,6 +1057,42 @@ export default {
       background-color: #9fc226;
       color: #fff;
     }
+  }
+}
+.game-results {
+  display: flex;
+  flex-direction: row;
+  margin-top: 25px;
+
+  .result-map {
+    width: 50%;
+    box-sizing: border-box;
+    figure {
+      margin: 0;
+    }
+    &:first-child {
+      margin-right: 6px;
+    }
+
+    &:last-child {
+      margin-left: 6px;
+    }
+    img {
+      width: 100%;
+    }
+  }
+}
+.section-header {
+  text-align: left;
+  margin-bottom: 25px;
+  p {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 14px;
   }
 }
 </style>
