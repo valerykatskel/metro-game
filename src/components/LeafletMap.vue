@@ -38,6 +38,17 @@
           layer-type="base"
         />
 
+        <l-control position="topleft">
+          <div class="stations-count">
+            <span v-if="userStationsLeft > 0">Осталось точек</span>
+            <span v-else>Точек не осталось</span>
+            <span v-if="userStationsLeft > 0" class="label">
+              {{ userStationsLeft }}
+            </span>
+          </div>
+        </l-control>
+
+        <l-control-zoom :position="zoomPosition" />
         <l-control-attribution
           :position="attributionPosition"
           :prefix="attributionPrefix"
@@ -60,7 +71,7 @@
               :color="item.markersColor"
               fillColor="#fff"
               :fillOpacity="1.0"
-              :weight="1"
+              :weight="4"
               :radius="8"
             >
               <l-tooltip :content="marker.tooltip" />
@@ -99,16 +110,6 @@
             class="user-line"
           />
         </l-layer-group>
-
-        <l-control position="topleft">
-          <div class="stations-count">
-            <span v-if="userStationsLeft > 0">Осталось точек</span>
-            <span v-else>Точек не осталось</span>
-            <span v-if="userStationsLeft > 0" class="label">{{
-              userStationsLeft
-            }}</span>
-          </div>
-        </l-control>
       </l-map>
 
       <div v-if="userStationAdded > 0" class="game-actions">
@@ -142,14 +143,87 @@
           <div class="result-map user-map">
             <figure>
               <img :src="mapScreenshot" alt />
-              <figcaption>{{ inputParams.userMapDescription }}</figcaption>
+              <figcaption>{{ inputParams.metroMapDescription }}</figcaption>
             </figure>
           </div>
           <div class="result-map gov-map">
-            <figure>
-              <img :src="mapScreenshot" alt />
-              <figcaption>{{ inputParams.metroMapDescription }}</figcaption>
-            </figure>
+            <l-map
+              ref="map"
+              :zoom="10"
+              :min-zoom="10"
+              :max-zoom="10"
+              :options="mapOptions"
+              :center="center"
+              :bounds="bounds"
+              :max-bounds="maxBounds"
+              style="height: 235px; width: 100%;"
+            >
+              <l-tile-layer
+                v-for="tileProvider in tileProviders"
+                :key="tileProvider.name"
+                :name="tileProvider.name"
+                :visible="tileProvider.visible"
+                :url="tileProvider.url"
+                :attribution="tileProvider.attribution"
+                :token="token"
+                layer-type="base"
+              />
+
+              <l-layer-group
+                v-for="item in metroData"
+                :key="item.id"
+                :visible.sync="item.visible"
+                layer-type="overlay"
+                :name="item.name"
+              >
+                <l-layer-group :visible="item.markersVisible">
+                  <l-circle-marker
+                    v-for="marker in item.markers"
+                    :key="marker.id"
+                    :lat-lng="marker.position"
+                    :visible="marker.visible"
+                    :color="item.markersColor"
+                    fillColor="#fff"
+                    :fillOpacity="1.0"
+                    :weight="2"
+                    :radius="4"
+                  >
+                    <l-tooltip :content="marker.tooltip" />
+                  </l-circle-marker>
+                </l-layer-group>
+                <l-polyline
+                  :lat-lngs="item.polyline.points"
+                  :visible="item.polyline.visible"
+                  :color="item.polyline.color"
+                  class="metro-line"
+                />
+              </l-layer-group>
+
+              <l-layer-group
+                v-for="item in this.getStations3Coords()"
+                :key="item.id"
+                :visible.sync="item.visible"
+                layer-type="overlay"
+                :name="item.name"
+              >
+                <l-circle-marker
+                  :lat-lng="item.position"
+                  :visible="item.visible"
+                  color="#83A801"
+                  fillColor="#fff"
+                  :fillOpacity="1.0"
+                  :weight="2"
+                  :radius="4"
+                ></l-circle-marker>
+              </l-layer-group>
+
+              <l-polyline
+                :lat-lngs="[...this.getLine3Coords()]"
+                :visible="true"
+                color="#83A801"
+                class="metro-line-3"
+              />
+            </l-map>
           </div>
         </div>
       </section>
@@ -170,6 +244,7 @@ import {
   LControl,
   LControlAttribution,
   LControlScale,
+  LControlZoom,
   LControlLayers,
   LIcon,
   LCircleMarker
@@ -711,6 +786,7 @@ export default {
     LControl,
     LControlAttribution,
     LControlScale,
+    LControlZoom,
     LControlLayers,
     LIcon,
     LCircleMarker,
@@ -783,19 +859,6 @@ export default {
           },
           markersColor: "#FF0000",
           visible: true,
-          markersVisible: true
-        },
-        {
-          id: "l3",
-          name: "Зеленолугская линия",
-          markers: this.getStations3Coords(),
-          polyline: {
-            points: this.getLine3Coords(),
-            visible: true,
-            color: "#83A801"
-          },
-          markersColor: "#83A801",
-          visible: false,
           markersVisible: true
         }
       ],
@@ -970,7 +1033,6 @@ export default {
   }
 }
 .leaflet-interactive {
-  stroke-width: 4px;
   width: 20px;
   height: 20px;
 }
@@ -1014,6 +1076,10 @@ export default {
 #mapScreenshot {
   width: 100%;
   max-width: 720px;
+}
+
+.leaflet-left .leaflet-control.leaflet-control-zoom {
+  margin-left: 20px;
 }
 
 .game-section {

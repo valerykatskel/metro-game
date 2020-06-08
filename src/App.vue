@@ -24,8 +24,9 @@ body {
   margin: 0;
 }
 #app {
-  margin: 0;
+  margin: 0 auto;
   height: 100%;
+  max-width: 720px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
