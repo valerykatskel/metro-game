@@ -108,23 +108,20 @@
           <l-polyline
             v-if="markersLine.length > 1"
             :lat-lngs="markersLine"
-            color="#83A801"
+            :weight="6"
+            color="#84B132"
             class="user-line"
           />
         </l-layer-group>
       </l-map>
 
       <div v-if="userStationAdded > 0" class="game-actions">
-        <ui-button
-          button-class="light"
-          @click="removeLast"
-          button-text="Удалить последнюю"
-        />
-        <ui-button
-          :is-disabled="isDisabledFinishButton"
-          @click="showResults"
-          button-text="Готово"
-        />
+        <ui-button button-class="light" @click="removeLast"
+          >Удалить последнюю</ui-button
+        >
+        <ui-button :is-disabled="isDisabledFinishButton" @click="showResults"
+          >Готово</ui-button
+        >
       </div>
     </section>
 

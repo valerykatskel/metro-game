@@ -4,15 +4,15 @@
     :disabled="isDisabled"
     @click="onClick"
     :class="buttonClass"
-    >{{ buttonText }}</a
   >
+    <slot></slot>
+  </a>
 </template>
 
 <script>
 export default {
   name: "UiButton",
   props: {
-    buttonText: String,
     buttonClass: String,
     isDisabled: Boolean
   },
