@@ -40,11 +40,15 @@
 
         <l-control position="topleft">
           <div class="stations-count">
-            <span v-if="userStationsLeft > 0">Осталось точек</span>
-            <span v-else>Точек не осталось</span>
-            <span v-if="userStationsLeft > 0" class="label">
-              {{ userStationsLeft }}
+            <span v-if="userStationsLeft > 0">
+              Еще можно поставить
+              <span
+                class="label"
+                >{{ userStationsLeft | pluralize point }}</span
+              >
+              точек
             </span>
+            <span v-else>Точек не осталось</span>
           </div>
         </l-control>
 
