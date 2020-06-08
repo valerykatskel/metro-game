@@ -200,7 +200,7 @@
                 <l-circle-marker
                   :lat-lng="item.position"
                   :visible="item.visible"
-                  color="#83A801"
+                  color="#84B132"
                   fillColor="#fff"
                   :fillOpacity="1.0"
                   :weight="2"
@@ -211,7 +211,7 @@
               <l-polyline
                 :lat-lngs="[...this.getLine3Coords()]"
                 :visible="true"
-                color="#83A801"
+                color="#84B132"
                 class="metro-line-3"
               />
             </l-map>

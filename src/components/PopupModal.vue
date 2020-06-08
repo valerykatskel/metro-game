@@ -65,13 +65,14 @@ export default {
   flex-direction: column;
 }
 
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
-}
-
-.modal-body {
-  margin: 20px 0;
+.modal-header {
+  p {
+    margin: 0 0 15px 0;
+    font-size: 17px;
+    line-height: 23px;
+    font-weight: bold;
+    color: #1d1d1f;
+  }
 }
 
 .modal-default-button {
@@ -101,7 +102,7 @@ export default {
   transform: scale(1.1);
 }
 .modal-footer {
-  button {
+  .button {
     width: 100%;
   }
 }

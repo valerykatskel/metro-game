@@ -31,6 +31,8 @@ export default {
   box-sizing: border-box;
   background: #84b132;
   border: none;
+  display: inline-block;
+  padding: 0 25px;
   height: 50px;
   font-family: Arial;
   font-size: 15px;
