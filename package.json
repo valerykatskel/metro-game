@@ -25,6 +25,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
     "node-sass": "^4.12.0",
+    "plural-ru": "^2.0.2",
     "prettier": "^1.19.1",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"

@@ -12,15 +12,25 @@
           </div>
 
           <div class="modal-footer">
-            <button class="modal-default-button" @click="$emit('onClosePopup')">
+            <ui-button @click="$emit('onClosePopup')">
               <slot name="button"></slot>
-            </button>
+            </ui-button>
           </div>
         </div>
       </div>
     </div>
   </transition>
 </template>
+
+<script>
+import UiButton from "./ui/UiButton";
+export default {
+  name: "PopupModal",
+  components: {
+    UiButton
+  }
+};
+</script>
 
 <style lang="scss">
 .modal-mask {

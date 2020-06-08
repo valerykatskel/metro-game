@@ -42,11 +42,8 @@
           <div class="stations-count">
             <span v-if="userStationsLeft > 0">
               Еще можно поставить
-              <span
-                class="label"
-                >{{ userStationsLeft | pluralize point }}</span
-              >
-              точек
+              <span class="label">{{ userStationsLeft }}</span>
+              {{ getPluralPoints(userStationsLeft) }}
             </span>
             <span v-else>Точек не осталось</span>
           </div>
@@ -85,6 +82,7 @@
             :lat-lngs="item.polyline.points"
             :visible="item.polyline.visible"
             :color="item.polyline.color"
+            :weight="6"
             class="metro-line"
           />
         </l-layer-group>
@@ -117,25 +115,16 @@
       </l-map>
 
       <div v-if="userStationAdded > 0" class="game-actions">
-        <button name="remove-last" class="button" @click="removeLast">
-          Удалить последнюю
-        </button>
-        <button
-          v-if="userStationAdded < 4"
-          name="remove-all"
-          class="button"
-          @click="removeAll"
-        >
-          Удалить все
-        </button>
-        <button
-          v-if="userStationAdded >= 4"
-          name="show-result"
-          class="button green"
+        <ui-button
+          button-class="light"
+          @click="removeLast"
+          button-text="Удалить последнюю"
+        />
+        <ui-button
+          :is-disabled="isDisabledFinishButton"
           @click="showResults"
-        >
-          Готово, поехали
-        </button>
+          button-text="Готово"
+        />
       </div>
     </section>
 
@@ -145,11 +134,12 @@
         <div class="description" v-html="inputParams.finalText"></div>
         <div class="game-results">
           <div class="result-map user-map">
-            <figure>
-              <img :src="mapScreenshot" alt />
-              <figcaption>{{ inputParams.metroMapDescription }}</figcaption>
-            </figure>
+            <img :src="mapScreenshot" alt />
+            <div class="map-description">
+              {{ inputParams.userMapDescription }}
+            </div>
           </div>
+
           <div class="result-map gov-map">
             <l-map
               ref="map"
@@ -228,6 +218,9 @@
                 class="metro-line-3"
               />
             </l-map>
+            <div class="map-description">
+              {{ inputParams.metroMapDescription }}
+            </div>
           </div>
         </div>
       </section>
@@ -255,8 +248,9 @@ import {
 } from "vue2-leaflet";
 
 import "leaflet-simple-map-screenshoter";
-
+import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
+import plural from "plural-ru";
 
 const tileProviders = [
   {
@@ -794,7 +788,8 @@ export default {
     LControlLayers,
     LIcon,
     LCircleMarker,
-    PopupModal
+    PopupModal,
+    UiButton
   },
   data() {
     return {
@@ -846,9 +841,9 @@ export default {
           polyline: {
             points: this.getLine1Coords(),
             visible: true,
-            color: "#051BA8"
+            color: "#3E73C9"
           },
-          markersColor: "#051BA8",
+          markersColor: "#3E73C9",
           visible: true,
           markersVisible: true
         },
@@ -859,9 +854,9 @@ export default {
           polyline: {
             points: this.getLine2Coords(),
             visible: true,
-            color: "#FF0000"
+            color: "#E2546B"
           },
-          markersColor: "#FF0000",
+          markersColor: "#E2546B",
           visible: true,
           markersVisible: true
         }
@@ -872,6 +867,9 @@ export default {
   methods: {
     alert(item) {
       alert("this is " + JSON.stringify(item));
+    },
+    getPluralPoints(count) {
+      return plural(count, "точку", "точки", "точек");
     },
     onMapClick: function(e) {
       //console.log();
@@ -942,9 +940,6 @@ export default {
     removeLast: function() {
       this.markers.pop();
     },
-    removeAll: function() {
-      this.markers = this.markers.filter(el => el > -1);
-    },
     showResults: function() {
       this.zoom = 11;
       const that = this;
@@ -987,6 +982,9 @@ export default {
       } else {
         return this.markers.map(el => el.position);
       }
+    },
+    isDisabledFinishButton() {
+      return this.userStationAdded < 4;
     },
     dynamicSize() {
       return [this.iconSize, this.iconSize * 1.15];
@@ -1053,7 +1051,6 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   .label {
     display: inline-block;
-    margin-left: 8px;
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -1106,16 +1103,6 @@ export default {
 
   .button {
     width: 50%;
-    box-sizing: border-box;
-    height: 50px;
-    line-height: 50px;
-    color: #1d1d1f;
-    font-size: 15px;
-    padding: 0;
-    border-radius: 3px;
-    background-color: #f2f2f2;
-    border: none;
-    cursor: pointer;
 
     &:first-child {
       margin-right: 12px;
@@ -1137,6 +1124,10 @@ export default {
   .result-map {
     width: 50%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     figure {
       margin: 0;
     }
