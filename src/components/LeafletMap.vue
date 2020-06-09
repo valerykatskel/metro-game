@@ -56,10 +56,7 @@
           v-for="tileProvider in tileProviders"
           :key="tileProvider.name"
           :name="tileProvider.name"
-          :visible="tileProvider.visible"
           :url="tileProvider.url"
-          :attribution="tileProvider.attribution"
-          :token="token"
           layer-type="base"
         />
 
@@ -173,10 +170,7 @@
                 v-for="tileProvider in tileProviders"
                 :key="tileProvider.name"
                 :name="tileProvider.name"
-                :visible="tileProvider.visible"
                 :url="tileProvider.url"
-                :attribution="tileProvider.attribution"
-                :token="token"
                 layer-type="base"
               />
 
@@ -736,7 +730,6 @@ export default {
     return {
       gameStep: 1,
       inputParams: {},
-      isGameOver: false,
       simpleMapScreenshoter: null,
       center: [53.9, 27.56667],
 
@@ -844,7 +837,7 @@ export default {
             const dataUrl = reader.result;
             const base64 = `data:image/jpeg;base64, ${dataUrl.split(",")[1]}`;
             that.mapScreenshot = base64;
-            that.isGameOver = true;
+            that.gameStep = 3;
           };
           reader.readAsDataURL(blob);
         })
