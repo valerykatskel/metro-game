@@ -15,13 +15,24 @@
         <h2>{{ inputParams.startHeader }}</h2>
         <div class="section-meta" v-html="inputParams.startMeta"></div>
         <div class="description" v-html="inputParams.startText"></div>
-        <div class="section-image start-animation-metro">
-          <div class="metro-bg-01"></div>
-          <div class="metro-bg-02"></div>
-          <div class="metro-bg-03"></div>
-        </div>
-        <ui-button @click="gameStep = 2">Начать игру</ui-button>
       </section>
+
+      <div
+        class="section-image start-animation-metro"
+        :class="{ 'train-arrived': isTrainArrived }"
+      >
+        <div class="metro-bg-01">
+          <img src="../assets/images/tunnel-inner.png" alt />
+        </div>
+        <div class="metro-bg-02">
+          <img src="../assets/images/tunnel.png" alt />
+        </div>
+        <div class="metro-bg-03">
+          <img src="../assets/images/metro.png" alt />
+        </div>
+      </div>
+
+      <ui-button @click="gameStep = 2">Начать игру</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -725,6 +736,7 @@ export default {
   data() {
     return {
       gameStep: 1,
+      isTrainArrived: false,
       inputParams: {},
       isGameOver: false,
       simpleMapScreenshoter: null,
@@ -909,6 +921,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.inputParams = window.inputData;
+      setTimeout(() => (this.isTrainArrived = true), 1000);
     });
   },
   computed: {
@@ -1118,6 +1131,48 @@ export default {
     margin-bottom: 14px;
     font-size: 35px;
     line-height: 41px;
+  }
+}
+
+.start-animation-metro {
+  position: relative;
+  width: 600px;
+  height: 340px;
+  margin: 0 auto;
+  overflow: hidden;
+  &.train-arrived {
+    .metro-bg-03 {
+      left: 0;
+    }
+  }
+  .metro-bg-01 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    img {
+      vertical-align: bottom;
+    }
+  }
+  .metro-bg-02 {
+    position: absolute;
+    left: -104px;
+    bottom: 0;
+    z-index: 10;
+    img {
+      vertical-align: bottom;
+    }
+  }
+  .metro-bg-03 {
+    position: absolute;
+    left: -600px;
+    bottom: -1px;
+    z-index: 5;
+    transition: left 1s cubic-bezier(0.24, 0.65, 0.53, 0.96);
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }
 </style>
