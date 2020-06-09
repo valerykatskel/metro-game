@@ -1,6 +1,10 @@
 <template>
   <div>
-    <popup-modal v-if="showPopup" @onClosePopup="showPopup = false">
+    <popup-modal
+      v-if="showPopup"
+      @onShowResult="closePopup(true)"
+      @onClosePopup="closePopup"
+    >
       <p slot="header">{{ inputParams.finalPopupText }}</p>
       <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
@@ -219,6 +223,12 @@
               {{ inputParams.metroMapDescription }}
             </div>
           </div>
+        </div>
+        <div
+          v-if="inputParams.mapDescription.trim().length > 0"
+          class="game-result-description"
+        >
+          {{ inputParams.mapDescription }}
         </div>
       </section>
     </section>
@@ -865,6 +875,10 @@ export default {
     alert(item) {
       alert("this is " + JSON.stringify(item));
     },
+    closePopup(showResult) {
+      this.showPopup = false;
+      if (showResult) this.showResults();
+    },
     getPluralPoints(count) {
       return plural(count, "точку", "точки", "точек");
     },
@@ -1036,7 +1050,7 @@ export default {
   height: 20px;
 }
 .stations-count {
-  margin: 10px 0 0 10px;
+  margin: 5px 0 0 5px;
   background: #fff;
   border-radius: 3px;
   height: 35px;
@@ -1077,7 +1091,7 @@ export default {
 }
 
 .leaflet-left .leaflet-control.leaflet-control-zoom {
-  margin-left: 20px;
+  margin-left: 15px;
 }
 
 .game-section {
@@ -1140,17 +1154,28 @@ export default {
     }
   }
 }
+.game-result-description {
+  font-size: 16px;
+  line-height: 19px;
+  margin-top: 20px;
+}
 .section-header {
   text-align: left;
   margin-bottom: 25px;
-  p {
-    margin-top: 10px;
-    margin-bottom: 0;
-  }
 
+  .description {
+    p {
+      margin-bottom: 0;
+      margin-top: 20px;
+      font-size: 17px;
+      line-height: 25px;
+    }
+  }
   h2 {
     margin-top: 0;
     margin-bottom: 14px;
+    font-size: 35px;
+    line-height: 41px;
   }
 }
 </style>

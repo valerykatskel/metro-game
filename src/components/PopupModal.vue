@@ -3,6 +3,11 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
+          <a href="#" @click="$emit('onClosePopup')" class="icon-close">
+            <icon-base>
+              <icon-close />
+            </icon-base>
+          </a>
           <div class="modal-header">
             <slot name="header"></slot>
           </div>
@@ -12,7 +17,7 @@
           </div>
 
           <div class="modal-footer">
-            <ui-button @click="$emit('onClosePopup')">
+            <ui-button @click="$emit('onShowResult')">
               <slot name="button"></slot>
             </ui-button>
           </div>
@@ -24,10 +29,14 @@
 
 <script>
 import UiButton from "./ui/UiButton";
+import IconBase from "./icons/IconBase";
+import IconClose from "./icons/IconClose";
 export default {
   name: "PopupModal",
   components: {
-    UiButton
+    UiButton,
+    IconBase,
+    IconClose
   }
 };
 </script>
@@ -50,6 +59,15 @@ export default {
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
+  position: relative;
+}
+
+.icon-close {
+  opacity: 0.3;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
 }
 
 .modal-container {
@@ -88,18 +106,10 @@ export default {
  * these styles.
  */
 
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
 .modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+  opacity: 0;
 }
 .modal-footer {
   .button {
