@@ -121,7 +121,7 @@
 
       <div v-if="userStationAdded > 0" class="game-actions">
         <ui-button button-class="light" @click="removeLast"
-          >Удалить последнюю</ui-button
+          >Удалить последнюю точку</ui-button
         >
         <ui-button :is-disabled="isDisabledFinishButton" @click="showResults"
           >Готово</ui-button
@@ -1063,12 +1063,12 @@ export default {
   .label {
     display: inline-block;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 25px;
+    height: 25px;
     font-size: 13px;
     background: #9fc226;
     color: #fff;
-    line-height: 24px;
+    line-height: 25px;
   }
 }
 .user-marker {

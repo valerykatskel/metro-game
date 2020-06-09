@@ -8,6 +8,11 @@
               <icon-close />
             </icon-base>
           </a>
+          <img
+            class="modal-header-image"
+            :src="require('../assets/images/popup-header-image.png')"
+            alt
+          />
           <div class="modal-header">
             <slot name="header"></slot>
           </div>
@@ -83,7 +88,15 @@ export default {
   flex-direction: column;
 }
 
+.modal-header-image {
+  width: 102px;
+  margin-top: -79px;
+  align-self: center;
+  height: 116px;
+}
+
 .modal-header {
+  margin-top: 12px;
   p {
     margin: 0 0 15px 0;
     font-size: 17px;
