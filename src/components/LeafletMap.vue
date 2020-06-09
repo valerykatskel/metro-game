@@ -8,7 +8,24 @@
       <p slot="header">{{ inputParams.finalPopupText }}</p>
       <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
-    <section v-if="!isGameOver">
+
+    <section v-if="gameStep === 1" class="start-section">
+      <section class="section-header">
+        <div class="section-label">{{ inputParams.gameLabel }}</div>
+        <h2>{{ inputParams.startHeader }}</h2>
+        <div class="section-meta" v-html="inputParams.startMeta"></div>
+        <div class="description" v-html="inputParams.startText"></div>
+        <div class="section-image start-animation-metro">
+          <div class="metro-bg-01"></div>
+          <div class="metro-bg-02"></div>
+          <div class="metro-bg-03"></div>
+        </div>
+        <ui-button @click="gameStep = 2">Начать игру</ui-button>
+      </section>
+      <div class="section-label">{{}}</div>
+    </section>
+
+    <section v-if="gameStep === 2">
       <section class="section-header">
         <h2>{{ inputParams.gameHeader }}</h2>
         <div class="description" v-html="inputParams.gameText"></div>
@@ -58,7 +75,6 @@
           :position="attributionPosition"
           :prefix="attributionPrefix"
         />
-        <l-control-scale :imperial="imperial" />
 
         <l-layer-group
           v-for="item in metroData"
@@ -129,7 +145,7 @@
       </div>
     </section>
 
-    <section v-else>
+    <section v-if="gameStep === 3">
       <section class="section-header">
         <h2>{{ inputParams.finalHeader }}</h2>
         <div class="description" v-html="inputParams.finalText"></div>
@@ -247,7 +263,6 @@ import {
   LTooltip,
   LControl,
   LControlAttribution,
-  LControlScale,
   LControlZoom,
   LControlLayers,
   LIcon,
@@ -261,88 +276,12 @@ import plural from "plural-ru";
 
 const tileProviders = [
   {
-    name: "OpenStreetMap",
-    visible: false,
-    attribution:
-      '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  },
-  {
-    name: "MapBox satellite-streets-v9",
-    visible: false,
-
-    attribution: "&copy; MapBox",
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  },
-  {
-    name: "MapBox streets-v9",
-    visible: false,
-
-    attribution: "&copy; MapBox",
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  },
-  {
     name: "MapBox light-v9",
     visible: true,
 
-    attribution: "&copy; MapBox",
+    attribution: "",
     url:
       "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  },
-  {
-    name: "MapBox dark-v9",
-    visible: false,
-
-    attribution: "&copy; MapBox",
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  },
-  {
-    name: "MapBox outdoors-v9",
-    visible: false,
-
-    attribution: "&copy; MapBox",
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  },
-  {
-    name: "OpenTopoMap",
-    visible: false,
-    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-    attribution:
-      'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-  },
-  {
-    name: "Humanitarian",
-    visible: false,
-    url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-    attribution: "Humanitarian focused OSM base layer"
-  },
-  {
-    name: "Without labels",
-    visible: false,
-    url: "https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png",
-    attribution: "Mapnik map without labels"
-  },
-  {
-    name: "Wikimedia Maps",
-    visible: false,
-    url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
-    attribution: "Wikimedia Maps"
-  },
-  {
-    name: "Black & White map",
-    visible: false,
-    url: "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
-    attribution: "Black & White map"
-  },
-  {
-    name: "Stamen Watercolor",
-    visible: false,
-    url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
-    attribution: "Stamen Watercolor"
   }
 ];
 
@@ -790,7 +729,6 @@ export default {
     LTooltip,
     LControl,
     LControlAttribution,
-    LControlScale,
     LControlZoom,
     LControlLayers,
     LIcon,
@@ -800,6 +738,7 @@ export default {
   },
   data() {
     return {
+      gameStep: 1,
       inputParams: {},
       isGameOver: false,
       simpleMapScreenshoter: null,
@@ -1159,9 +1098,26 @@ export default {
   line-height: 19px;
   margin-top: 20px;
 }
+.start-section {
+  .section-header {
+    text-align: center;
+  }
+}
 .section-header {
   text-align: left;
   margin-bottom: 25px;
+
+  .section-label {
+    color: #808080;
+  }
+  .section-meta {
+    p {
+      margin: 0;
+      color: #808080;
+      font-size: 12px;
+      line-height: 17px;
+    }
+  }
 
   .description {
     p {
