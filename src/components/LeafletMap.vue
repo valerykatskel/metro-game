@@ -22,7 +22,6 @@
         </div>
         <ui-button @click="gameStep = 2">Начать игру</ui-button>
       </section>
-      <div class="section-label">{{}}</div>
     </section>
 
     <section v-if="gameStep === 2">
@@ -43,11 +42,6 @@
         style="height: 480px; width: 100%;"
         @click="onMapClick"
       >
-        <l-control-layers
-          :position="layersPosition"
-          :collapsed="true"
-          :sort-layers="true"
-        />
         <l-tile-layer
           v-for="tileProvider in tileProviders"
           :key="tileProvider.name"
@@ -71,10 +65,6 @@
         </l-control>
 
         <l-control-zoom :position="zoomPosition" />
-        <l-control-attribution
-          :position="attributionPosition"
-          :prefix="attributionPrefix"
-        />
 
         <l-layer-group
           v-for="item in metroData"
@@ -262,9 +252,7 @@ import {
   LLayerGroup,
   LTooltip,
   LControl,
-  LControlAttribution,
   LControlZoom,
-  LControlLayers,
   LIcon,
   LCircleMarker
 } from "vue2-leaflet";
@@ -728,9 +716,7 @@ export default {
     LLayerGroup,
     LTooltip,
     LControl,
-    LControlAttribution,
     LControlZoom,
-    LControlLayers,
     LIcon,
     LCircleMarker,
     PopupModal,
