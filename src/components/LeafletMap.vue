@@ -17,10 +17,7 @@
         <div class="description" v-html="inputParams.startText"></div>
       </section>
 
-      <div
-        class="section-image start-animation-metro"
-        :class="{ 'train-arrived': isTrainArrived }"
-      >
+      <div class="section-image start-animation-metro">
         <div class="metro-bg-01">
           <img src="../assets/images/tunnel-inner.png" alt />
         </div>
@@ -32,7 +29,9 @@
         </div>
       </div>
 
-      <ui-button @click="gameStep = 2">Начать игру</ui-button>
+      <ui-button button-class="start-game-button" @click="gameStep = 2"
+        >Начать игру</ui-button
+      >
     </section>
 
     <section v-if="gameStep === 2">
@@ -272,7 +271,7 @@ import "leaflet-simple-map-screenshoter";
 import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
 import plural from "plural-ru";
-
+import { gsap } from "gsap";
 const tileProviders = [
   {
     name: "MapBox light-v9",
@@ -736,13 +735,11 @@ export default {
   data() {
     return {
       gameStep: 1,
-      isTrainArrived: false,
       inputParams: {},
       isGameOver: false,
       simpleMapScreenshoter: null,
       center: [53.9, 27.56667],
-      token:
-        "pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg",
+
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
@@ -921,7 +918,20 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.inputParams = window.inputData;
-      setTimeout(() => (this.isTrainArrived = true), 1000);
+
+      // gsap animation for start game section
+      gsap.from(".metro-bg-01", { duration: 3, opacity: 0 });
+      gsap.fromTo(
+        ".metro-bg-03",
+        { left: -1000 },
+        { duration: 4, left: 0 },
+        "+=5"
+      );
+      gsap.fromTo(
+        ".start-game-button",
+        { opacity: 0 },
+        { duration: 2, delay: 6, opacity: 1 }
+      );
     });
   },
   computed: {
@@ -1101,6 +1111,10 @@ export default {
   .section-header {
     text-align: center;
   }
+  .start-game-button {
+    opacity: 0;
+    width: 100%;
+  }
 }
 .section-header {
   text-align: left;
@@ -1140,16 +1154,14 @@ export default {
   height: 340px;
   margin: 0 auto;
   overflow: hidden;
-  &.train-arrived {
-    .metro-bg-03 {
-      left: 0;
-    }
-  }
+  margin-bottom: 30px;
+
   .metro-bg-01 {
     position: absolute;
     left: 0;
     bottom: 0;
     z-index: 1;
+    opacity: 1;
     img {
       vertical-align: bottom;
     }
@@ -1165,10 +1177,10 @@ export default {
   }
   .metro-bg-03 {
     position: absolute;
-    left: -600px;
+    left: -1000px;
     bottom: -1px;
     z-index: 5;
-    transition: left 1s cubic-bezier(0.24, 0.65, 0.53, 0.96);
+    transition: left 1500ms cubic-bezier(0.24, 0.65, 0.53, 0.96);
 
     img {
       vertical-align: bottom;
