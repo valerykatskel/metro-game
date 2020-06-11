@@ -1081,6 +1081,10 @@ export default {
     flex-direction: column;
     justify-content: space-between;
 
+    .map-description {
+      text-align: left;
+    }
+
     figure {
       margin: 0;
     }

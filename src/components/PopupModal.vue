@@ -1,27 +1,27 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+    <div class="app-modal-mask">
+      <div class="app-modal-wrapper">
+        <div class="app-modal-container">
           <a href="#" @click="$emit('onClosePopup')" class="icon-close">
             <icon-base>
               <icon-close />
             </icon-base>
           </a>
           <img
-            class="modal-header-image"
+            class="app-modal-header-image"
             :src="require('../assets/images/popup-header-image.png')"
             alt
           />
-          <div class="modal-header">
+          <div class="app-modal-header">
             <slot name="header"></slot>
           </div>
 
-          <div class="modal-body">
+          <div class="app-modal-body">
             <slot name="body"></slot>
           </div>
 
-          <div class="modal-footer">
+          <div class="app-modal-footer">
             <ui-button @click="$emit('onShowResult')">
               <slot name="button"></slot>
             </ui-button>
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style lang="scss">
-.modal-mask {
+.app-modal-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -61,7 +61,7 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.modal-wrapper {
+.app-modal-wrapper {
   display: table-cell;
   vertical-align: middle;
   position: relative;
@@ -75,7 +75,7 @@ export default {
   cursor: pointer;
 }
 
-.modal-container {
+.app-modal-container {
   width: 300px;
   margin: 0px auto;
   padding: 20px 30px;
@@ -88,14 +88,14 @@ export default {
   flex-direction: column;
 }
 
-.modal-header-image {
+.app-modal-header-image {
   width: 102px;
   margin-top: -79px;
   align-self: center;
   height: 116px;
 }
 
-.modal-header {
+.app-modal-header {
   margin-top: 12px;
   p {
     margin: 0 0 15px 0;
@@ -119,12 +119,12 @@ export default {
  * these styles.
  */
 
-.modal-leave-active .modal-container {
+.modal-leave-active .app-modal-container {
   -webkit-transform: scale(1.5);
   transform: scale(1.5);
   opacity: 0;
 }
-.modal-footer {
+.app-modal-footer {
   .button {
     width: 100%;
   }
