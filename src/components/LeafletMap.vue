@@ -781,9 +781,9 @@ export default {
           polyline: {
             points: this.getLine1Coords(),
             visible: true,
-            color: "#3E73C9"
+            color: "#4692F0"
           },
-          markersColor: "#3E73C9",
+          markersColor: "#4692F0",
           visible: true,
           markersVisible: true
         },
@@ -794,9 +794,9 @@ export default {
           polyline: {
             points: this.getLine2Coords(),
             visible: true,
-            color: "#E2546B"
+            color: "#FB6483"
           },
-          markersColor: "#E2546B",
+          markersColor: "#FB6483",
           visible: true,
           markersVisible: true
         }
@@ -1005,10 +1005,12 @@ export default {
   .label {
     display: inline-block;
     border-radius: 50%;
+    margin-left: 10px;
     width: 25px;
     height: 25px;
     font-size: 13px;
-    background: #9fc226;
+    display: inline-block;
+    background: #84b132;
     color: #fff;
     line-height: 25px;
   }
