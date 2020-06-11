@@ -10,35 +10,41 @@
     </popup-modal>
 
     <section v-if="gameStep === 1" class="start-section">
-      <section class="section-header">
-        <div class="section-label">{{ inputParams.gameLabel }}</div>
-        <h2>{{ inputParams.startHeader }}</h2>
-        <div class="section-meta" v-html="inputParams.startMeta"></div>
-        <div class="description" v-html="inputParams.startText"></div>
-      </section>
+      <section-header
+        :section-label="inputParams.gameLabel"
+        :section-header="inputParams.startHeader"
+        :section-meta="inputParams.startMeta"
+        :section-description="inputParams.startText"
+      />
 
       <div class="section-image start-animation-metro">
         <div class="metro-bg-01">
-          <img src="../assets/images/tunnel-inner.png" alt />
+          <img
+            src="https://img.tyt.by/news/special/metro-game/tunnel-inner.png"
+            alt
+          />
         </div>
         <div class="metro-bg-02">
-          <img src="../assets/images/tunnel.png" alt />
+          <img
+            src="https://img.tyt.by/news/special/metro-game/tunnel.png"
+            alt
+          />
         </div>
         <div class="metro-bg-03">
-          <img src="../assets/images/metro.png" alt />
+          <img src="https://img.tyt.by/news/special/metro-game/metro.png" alt />
         </div>
       </div>
 
-      <ui-button button-class="start-game-button" @click="gameStep = 2"
-        >Начать игру</ui-button
-      >
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
-      <section class="section-header">
-        <h2>{{ inputParams.gameHeader }}</h2>
-        <div class="description" v-html="inputParams.gameText"></div>
-      </section>
+      <section-header
+        :section-header="inputParams.gameHeader"
+        :section-description="inputParams.gameText"
+      />
       <l-map
         ref="map"
         :zoom.sync="zoom"
@@ -63,9 +69,8 @@
         <l-control position="topleft">
           <div class="stations-count">
             <span v-if="userStationsLeft > 0">
-              Еще можно поставить
+              Еще можно поставить точек
               <span class="label">{{ userStationsLeft }}</span>
-              {{ getPluralPoints(userStationsLeft) }}
             </span>
             <span v-else>Точек не осталось</span>
           </div>
@@ -143,104 +148,105 @@
     </section>
 
     <section v-if="gameStep === 3">
-      <section class="section-header">
-        <h2>{{ inputParams.finalHeader }}</h2>
-        <div class="description" v-html="inputParams.finalText"></div>
-        <div class="game-results">
-          <div class="result-map user-map">
-            <img :src="mapScreenshot" alt />
-            <div class="map-description">
-              {{ inputParams.userMapDescription }}
-            </div>
+      <section-header
+        :section-header="inputParams.finalHeader"
+        :section-description="inputParams.finalText"
+      />
+
+      <div class="game-results">
+        <div class="result-map user-map">
+          <img :src="mapScreenshot" alt />
+          <div class="map-description">
+            {{ inputParams.userMapDescription }}
           </div>
+        </div>
 
-          <div class="result-map gov-map">
-            <l-map
-              ref="map"
-              :zoom="10"
-              :min-zoom="10"
-              :max-zoom="10"
-              :options="mapOptions"
-              :center="center"
-              :bounds="bounds"
-              :max-bounds="maxBounds"
-              style="height: 235px; width: 100%;"
+        <div class="result-map gov-map">
+          <l-map
+            ref="map"
+            :zoom="10"
+            :min-zoom="10"
+            :max-zoom="10"
+            :options="mapOptions"
+            :center="center"
+            :bounds="bounds"
+            :max-bounds="maxBounds"
+            style="height: 235px; width: 100%;"
+          >
+            <l-tile-layer
+              v-for="tileProvider in tileProviders"
+              :key="tileProvider.name"
+              :name="tileProvider.name"
+              :url="tileProvider.url"
+              layer-type="base"
+            />
+
+            <l-layer-group
+              v-for="item in metroData"
+              :key="item.id"
+              :visible.sync="item.visible"
+              layer-type="overlay"
+              :name="item.name"
             >
-              <l-tile-layer
-                v-for="tileProvider in tileProviders"
-                :key="tileProvider.name"
-                :name="tileProvider.name"
-                :url="tileProvider.url"
-                layer-type="base"
-              />
-
-              <l-layer-group
-                v-for="item in metroData"
-                :key="item.id"
-                :visible.sync="item.visible"
-                layer-type="overlay"
-                :name="item.name"
-              >
-                <l-layer-group :visible="item.markersVisible">
-                  <l-circle-marker
-                    v-for="marker in item.markers"
-                    :key="marker.id"
-                    :lat-lng="marker.position"
-                    :visible="marker.visible"
-                    :color="item.markersColor"
-                    fillColor="#fff"
-                    :fillOpacity="1.0"
-                    :weight="2"
-                    :radius="4"
-                  >
-                    <l-tooltip :content="marker.tooltip" />
-                  </l-circle-marker>
-                </l-layer-group>
-                <l-polyline
-                  :lat-lngs="item.polyline.points"
-                  :visible="item.polyline.visible"
-                  :color="item.polyline.color"
-                  class="metro-line"
-                />
-              </l-layer-group>
-
-              <l-layer-group
-                v-for="item in this.getStations3Coords()"
-                :key="item.id"
-                :visible.sync="item.visible"
-                layer-type="overlay"
-                :name="item.name"
-              >
+              <l-layer-group :visible="item.markersVisible">
                 <l-circle-marker
-                  :lat-lng="item.position"
-                  :visible="item.visible"
-                  color="#84B132"
+                  v-for="marker in item.markers"
+                  :key="marker.id"
+                  :lat-lng="marker.position"
+                  :visible="marker.visible"
+                  :color="item.markersColor"
                   fillColor="#fff"
                   :fillOpacity="1.0"
                   :weight="2"
                   :radius="4"
-                ></l-circle-marker>
+                >
+                  <l-tooltip :content="marker.tooltip" />
+                </l-circle-marker>
               </l-layer-group>
-
               <l-polyline
-                :lat-lngs="[...this.getLine3Coords()]"
-                :visible="true"
-                color="#84B132"
-                class="metro-line-3"
+                :lat-lngs="item.polyline.points"
+                :visible="item.polyline.visible"
+                :color="item.polyline.color"
+                class="metro-line"
               />
-            </l-map>
-            <div class="map-description">
-              {{ inputParams.metroMapDescription }}
-            </div>
+            </l-layer-group>
+
+            <l-layer-group
+              v-for="item in this.getStations3Coords()"
+              :key="item.id"
+              :visible.sync="item.visible"
+              layer-type="overlay"
+              :name="item.name"
+            >
+              <l-circle-marker
+                :lat-lng="item.position"
+                :visible="item.visible"
+                color="#84B132"
+                fillColor="#fff"
+                :fillOpacity="1.0"
+                :weight="2"
+                :radius="4"
+              ></l-circle-marker>
+            </l-layer-group>
+
+            <l-polyline
+              :lat-lngs="[...this.getLine3Coords()]"
+              :visible="true"
+              color="#84B132"
+              class="metro-line-3"
+            />
+          </l-map>
+          <div class="map-description">
+            {{ inputParams.metroMapDescription }}
           </div>
         </div>
-        <div
-          v-if="inputParams.mapDescription.trim().length > 0"
-          class="game-result-description"
-        >
-          {{ inputParams.mapDescription }}
-        </div>
-      </section>
+      </div>
+      <div
+        v-if="inputParams.mapDescription.trim().length > 0"
+        class="game-result-description"
+      >
+        {{ inputParams.mapDescription }}
+      </div>
     </section>
   </div>
 </template>
@@ -264,13 +270,12 @@ import {
 import "leaflet-simple-map-screenshoter";
 import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
-import plural from "plural-ru";
+import SectionHeader from "./SectionHeader";
 import { gsap } from "gsap";
 const tileProviders = [
   {
     name: "MapBox light-v9",
     visible: true,
-
     attribution: "",
     url:
       "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
@@ -724,7 +729,8 @@ export default {
     LIcon,
     LCircleMarker,
     PopupModal,
-    UiButton
+    UiButton,
+    SectionHeader
   },
   data() {
     return {
@@ -806,9 +812,7 @@ export default {
       this.showPopup = false;
       if (showResult) this.showResults();
     },
-    getPluralPoints(count) {
-      return plural(count, "точку", "точки", "точек");
-    },
+
     onMapClick: function(e) {
       //console.log();
       if (this.userStationsLeft > 0) this.addMarker(e);
@@ -869,7 +873,9 @@ export default {
         active: true,
         draggable: true,
         visible: true,
-        icon: "./images/green-marker.png",
+        icon: "https://img.tyt.by/news/special/metro-game/green-marker.png",
+        icon2x:
+          "https://img.tyt.by/news/special/metro-game/green-marker@2x.png",
         className: "user-marker"
       };
       this.markers.push(newMarker);
@@ -913,17 +919,12 @@ export default {
       this.inputParams = window.inputData;
 
       // gsap animation for start game section
-      gsap.from(".metro-bg-01", { duration: 3, opacity: 0 });
-      gsap.fromTo(
-        ".metro-bg-03",
-        { left: -1000 },
-        { duration: 4, left: 0 },
-        "+=5"
-      );
+      gsap.from(".metro-bg-01", { duration: 1, opacity: 0 });
+      gsap.fromTo(".metro-bg-03", { left: -600 }, { duration: 0.8, left: 0 });
       gsap.fromTo(
         ".start-game-button",
         { opacity: 0 },
-        { duration: 2, delay: 6, opacity: 1 }
+        { duration: 1.5, delay: 2.5, opacity: 1 }
       );
     });
   },
@@ -1109,37 +1110,6 @@ export default {
     width: 100%;
   }
 }
-.section-header {
-  text-align: left;
-  margin-bottom: 25px;
-
-  .section-label {
-    color: #808080;
-  }
-  .section-meta {
-    p {
-      margin: 0;
-      color: #808080;
-      font-size: 12px;
-      line-height: 17px;
-    }
-  }
-
-  .description {
-    p {
-      margin-bottom: 0;
-      margin-top: 20px;
-      font-size: 17px;
-      line-height: 25px;
-    }
-  }
-  h2 {
-    margin-top: 0;
-    margin-bottom: 14px;
-    font-size: 35px;
-    line-height: 41px;
-  }
-}
 
 .start-animation-metro {
   position: relative;
@@ -1170,7 +1140,7 @@ export default {
   }
   .metro-bg-03 {
     position: absolute;
-    left: -1000px;
+    left: -600px;
     bottom: -1px;
     z-index: 5;
     transition: left 1500ms cubic-bezier(0.24, 0.65, 0.53, 0.96);

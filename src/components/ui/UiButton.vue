@@ -29,7 +29,7 @@ export default {
 <style lang="scss" scoped>
 .button {
   box-sizing: border-box;
-  background: #fb6483;
+  background: #84b132;
   border: none;
   display: inline-block;
   padding: 0 25px;
@@ -49,6 +49,10 @@ export default {
   &.light {
     background: #f2f2f2;
     color: #1d1d1f;
+  }
+
+  &.start {
+    background: #fb6483;
   }
 }
 </style>

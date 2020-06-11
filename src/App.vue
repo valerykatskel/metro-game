@@ -26,7 +26,9 @@ body {
 #app {
   margin: 0 auto;
   height: 100%;
+  padding: 30px;
   max-width: 720px;
+  box-sizing: content-box;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
