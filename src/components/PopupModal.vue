@@ -3,7 +3,7 @@
     <div class="app-modal-mask">
       <div class="app-modal-wrapper">
         <div class="app-modal-container">
-          <a href="#" @click="$emit('onClosePopup')" class="icon-close">
+          <a href="#" @click="$emit('onClosePopup')" class="app-icon-close">
             <icon-base>
               <icon-close />
             </icon-base>
@@ -67,7 +67,7 @@ export default {
   position: relative;
 }
 
-.icon-close {
+.app-icon-close {
   opacity: 0.3;
   position: absolute;
   right: 15px;
