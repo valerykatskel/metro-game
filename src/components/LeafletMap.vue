@@ -35,9 +35,21 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
+
+      <div class="sharing-list">
+        <ShareNetwork
+          network="facebook"
+          url="https://news.vuejs.org/issues/180"
+          title="Say hi to Vite! A brand new, extremely fast development setup for Vue."
+          description="This week, I’d like to introduce you to 'Vite', which means 'Fast'. It’s a brand new development setup created by Evan You."
+          quote="The hot reload is so fast it\'s near instant. - Evan You"
+          hashtags="vuejs,vite"
+          >Share on Facebook</ShareNetwork
+        >
+      </div>
     </section>
 
     <section v-if="gameStep === 2">
@@ -271,6 +283,7 @@ import "leaflet-simple-map-screenshoter";
 import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
 import SectionHeader from "./SectionHeader";
+
 import { gsap } from "gsap";
 const tileProviders = [
   {
@@ -1154,6 +1167,52 @@ export default {
     img {
       vertical-align: bottom;
     }
+  }
+}
+
+.sharing-list {
+  height: 30px;
+
+  span {
+    // cursor: pointer;
+    // display: inline-block;
+    // background-color: rgba(255, 255, 255, 0.35);
+    // margin-left: 5px;
+    // width: 30px;
+    // height: 30px;
+    // background-position: 50%;
+    // background-repeat: no-repeat;
+    // transition: background-color 300ms;
+    // opacity: 0.5;
+
+    // &:hover {
+    //   opacity: 1;
+    //   background-color: rgba(255, 255, 255, 0.45);
+    // }
+
+    // &:first-child {
+    //   margin-left: 0;
+    // }
+
+    // &[data-link="#share-facebook"] {
+    //   background-image: url("../images/icons/icon-fb.svg");
+    // }
+
+    // &[data-link="#share-vk"] {
+    //   background-image: url("../images/icons/icon-vk.svg");
+    // }
+
+    // &[data-link="#share-viber"] {
+    //   background-image: url("../images/icons/icon-vk.svg");
+    // }
+
+    // &[data-link="#share-twitter"] {
+    //   background-image: url("../images/icons/icon-vk.svg");
+    // }
+
+    // &[data-link="#share-odnoklassniki"] {
+    //   background-image: url("../images/icons/ap-icon-ok.svg");
+    // }
   }
 }
 </style>
