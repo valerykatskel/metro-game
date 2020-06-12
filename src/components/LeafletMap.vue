@@ -38,18 +38,6 @@
       <ui-button button-class="start-game-button start" @click="gameStep = 2">
         {{ inputParams.startButton }}
       </ui-button>
-
-      <div class="sharing-list">
-        <ShareNetwork
-          network="facebook"
-          url="https://news.vuejs.org/issues/180"
-          title="Say hi to Vite! A brand new, extremely fast development setup for Vue."
-          description="This week, I’d like to introduce you to 'Vite', which means 'Fast'. It’s a brand new development setup created by Evan You."
-          quote="The hot reload is so fast it\'s near instant. - Evan You"
-          hashtags="vuejs,vite"
-          >Share on Facebook</ShareNetwork
-        >
-      </div>
     </section>
 
     <section v-if="gameStep === 2">
@@ -253,17 +241,28 @@
           </div>
         </div>
       </div>
-      <div
-        v-if="inputParams.mapDescription.trim().length > 0"
-        class="game-result-description"
-      >
-        {{ inputParams.mapDescription }}
+
+      <ui-button button-class="start-game-button start" @click="runGameAgain">
+        Начать заново
+      </ui-button>
+
+      <div class="sharing-list">
+        <ShareNetwork
+          network="facebook"
+          url="https://news.vuejs.org/issues/180"
+          title="Say hi to Vite! A brand new, extremely fast development setup for Vue."
+          description="This week, I’d like to introduce you to 'Vite', which means 'Fast'. It’s a brand new development setup created by Evan You."
+          quote="The hot reload is so fast it\'s near instant. - Evan You"
+          hashtags="vuejs,vite"
+          >Share on Facebook</ShareNetwork
+        >
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import "leaflet";
 import { latLngBounds } from "leaflet";
 import {
@@ -751,22 +750,23 @@ export default {
       inputParams: {},
       simpleMapScreenshoter: null,
       center: [53.9, 27.56667],
-
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
         zoomSnap: true
       },
       markers: [],
+      postBody: {
+        // пример данных для отправки(позже они преобразуются в json)
+        base64Str: ""
+      },
+
       mapScreenshot: "",
       zoom: 11,
       distanceBetweenStantions: 0.2,
       minZoom: 11,
       maxZoom: 15,
-      zoomPosition: "topleft",
-      attributionPosition: "bottomright",
-      layersPosition: "topright",
-      attributionPrefix: "TUT.BY",
+      zoomPosition: "bottomright",
       imperial: false,
       Positions: ["topleft", "topright", "bottomleft", "bottomright"],
       tileProviders: tileProviders,
@@ -818,22 +818,18 @@ export default {
     };
   },
   methods: {
-    alert(item) {
-      alert("this is " + JSON.stringify(item));
-    },
     closePopup(showResult) {
       this.showPopup = false;
       if (showResult) this.showResults();
     },
 
-    onMapClick: function(e) {
-      //console.log();
+    onMapClick(e) {
       if (this.userStationsLeft > 0) this.addMarker(e);
     },
-    createUserMarkerTooltip: function(pos) {
+    createUserMarkerTooltip(pos) {
       return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
-    getScreenShot: function() {
+    getScreenShot() {
       const map = this.$refs.map.mapObject;
       const that = this;
       if (!this.simpleMapScreenshoter) {
@@ -851,10 +847,26 @@ export default {
         .then(blob => {
           const reader = new FileReader();
           reader.onload = function() {
-            const dataUrl = reader.result;
-            const base64 = `data:image/jpeg;base64, ${dataUrl.split(",")[1]}`;
-            that.mapScreenshot = base64;
-            that.gameStep = 3;
+            that.postBody.base64Str = reader.result.split(",")[1];
+            that.showLoader = true;
+            //const jsonData = JSON.stringify(that.postBody);
+
+            var config = {
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/x-www-form-urlencoded"
+              }
+            };
+            var data = new FormData(); // Currently empty
+            data.append("base64Str", reader.result.split(",")[1]);
+
+            axios
+              .post("http://localhost:8088/upload/", data, config)
+              .then(response => {
+                that.showLoader = false;
+                that.mapScreenshot = response.secure_url;
+                that.gameStep = 3;
+              });
           };
           reader.readAsDataURL(blob);
         })
@@ -862,7 +874,7 @@ export default {
           console.error(e.toString());
         });
     },
-    getLatLngForUserMarker: function() {
+    getLatLngForUserMarker() {
       const latDelta = this.maxLat - this.minLat;
       const lngDelta = this.maxLng - this.minLng;
       const rndLat = Math.random() * latDelta;
@@ -871,7 +883,7 @@ export default {
       const lng = this.minLng + rndLng;
       return { lat, lng };
     },
-    addMarker: function(e) {
+    addMarker(e) {
       let position;
 
       if (e.latlng !== undefined) {
@@ -894,20 +906,34 @@ export default {
       this.markers.push(newMarker);
       if (this.markers.length === this.userStationsCount) this.showPopup = true;
     },
-    removeLast: function() {
+    removeLast() {
       this.markers.pop();
     },
-    showResults: function() {
+    showResults() {
       this.zoom = 11;
       const that = this;
       setTimeout(function() {
         that.getScreenShot();
       }, 1000);
     },
-    removeMarker: function(index) {
+    removeMarker(index) {
       this.markers.splice(index, 1);
     },
 
+    runTonnelAnimation() {
+      // gsap animation for start game section
+      gsap.fromTo(".metro-bg-01", 1, { opacity: 0 }, { opacity: 1 });
+      gsap.fromTo(".metro-bg-03", 0.8, { left: -600 }, { left: 0 });
+      gsap.fromTo(
+        ".start-game-button",
+        { opacity: 0 },
+        { duration: 1.5, delay: 2.5, opacity: 1 }
+      );
+    },
+    runGameAgain() {
+      this.gameStep = 1;
+      this.runTonnelAnimation();
+    },
     getStations1Coords: () => stations.filter(el => el.line === 1),
 
     getStations2Coords: () => stations.filter(el => el.line === 2),
@@ -931,14 +957,7 @@ export default {
     this.$nextTick(() => {
       this.inputParams = window.inputData;
 
-      // gsap animation for start game section
-      gsap.from(".metro-bg-01", { duration: 1, opacity: 0 });
-      gsap.fromTo(".metro-bg-03", { left: -600 }, { duration: 0.8, left: 0 });
-      gsap.fromTo(
-        ".start-game-button",
-        { opacity: 0 },
-        { duration: 1.5, delay: 2.5, opacity: 1 }
-      );
+      this.runTonnelAnimation();
     });
   },
   computed: {
@@ -1098,6 +1117,10 @@ export default {
 
     .map-description {
       text-align: left;
+      color: #808080;
+      font-size: 13px;
+      line-height: 18px;
+      margin-top: 10px;
     }
 
     figure {
@@ -1160,7 +1183,7 @@ export default {
   .metro-bg-03 {
     position: absolute;
     left: -600px;
-    bottom: -1px;
+    bottom: 0;
     z-index: 5;
     transition: left 1500ms cubic-bezier(0.24, 0.65, 0.53, 0.96);
 
