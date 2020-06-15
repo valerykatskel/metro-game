@@ -10,7 +10,7 @@
       <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
 
-    <section v-if="gameStep === 1" class="start-section">
+    <section v-show="gameStep === 1" class="start-section">
       <section-header
         :section-label="inputParams.gameLabel"
         :section-header="inputParams.startHeader"
@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -859,16 +859,16 @@ export default {
 
             var urlencoded = new URLSearchParams();
             urlencoded.append("base64Str", base64Str);
-
+            urlencoded.append("upldf", "metro-game");
             var requestOptions = {
               method: "POST",
               headers: myHeaders,
               body: urlencoded,
               redirect: "follow"
             };
-            //const urlToCloudinaryUploader = "http://localhost:8088/upload";
-            const urlToCloudinaryUploader =
-              "https://tut-quiz.herokuapp.com/upload";
+            const urlToCloudinaryUploader = "http://localhost:8088/upload";
+            // const urlToCloudinaryUploader =
+            // ("https://tut-quiz.herokuapp.com/upload");
             fetch(urlToCloudinaryUploader, requestOptions)
               .then(response => response.json())
               .then(result => {
@@ -931,10 +931,13 @@ export default {
 
     runTonnelAnimation() {
       // gsap animation for start game section
-      gsap.fromTo(".metro-bg-01", 1, { opacity: 0 }, { opacity: 1 });
-      gsap.fromTo(".metro-bg-03", 0.8, { left: -600 }, { left: 0 });
+      const metroEl = document.querySelector(".metro-bg-03");
+      const tonnelEl = document.querySelector(".metro-bg-01");
+      const startGameBtn = document.querySelector(".start-game-button");
+      gsap.fromTo(tonnelEl, 1, { opacity: 0 }, { opacity: 1 });
+      gsap.fromTo(metroEl, 0.8, { left: -600 }, { left: 0 });
       gsap.fromTo(
-        ".start-game-button",
+        startGameBtn,
         { opacity: 0 },
         { duration: 1.5, delay: 2.5, opacity: 1 }
       );
