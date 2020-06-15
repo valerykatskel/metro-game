@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -866,9 +866,9 @@ export default {
               body: urlencoded,
               redirect: "follow"
             };
-            const urlToCloudinaryUploader = "http://localhost:8088/upload";
-            // const urlToCloudinaryUploader =
-            // ("https://tut-quiz.herokuapp.com/upload");
+            //const urlToCloudinaryUploader = "http://localhost:8088/upload";
+            const urlToCloudinaryUploader =
+              "https://tut-quiz.herokuapp.com/upload";
             fetch(urlToCloudinaryUploader, requestOptions)
               .then(response => response.json())
               .then(result => {
