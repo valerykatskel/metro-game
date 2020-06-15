@@ -1,5 +1,6 @@
 <template>
   <div>
+    <app-loader v-if="showLoader" />
     <popup-modal
       v-if="showPopup"
       @onShowResult="closePopup(true)"
@@ -35,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -280,6 +281,7 @@ import {
 import "leaflet-simple-map-screenshoter";
 import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
+import AppLoader from "./AppLoader";
 import SectionHeader from "./SectionHeader";
 
 import { gsap } from "gsap";
@@ -740,6 +742,7 @@ export default {
     LIcon,
     LCircleMarker,
     PopupModal,
+    AppLoader,
     UiButton,
     SectionHeader
   },
@@ -755,7 +758,7 @@ export default {
         zoomSnap: true
       },
       markers: [],
-
+      showLoader: false,
       mapScreenshot: "",
       zoom: 11,
       distanceBetweenStantions: 0.2,
@@ -817,7 +820,11 @@ export default {
       this.showPopup = false;
       if (showResult) this.showResults();
     },
-
+    handleResult(res) {
+      this.gameStep = 3;
+      this.mapScreenshot = res.secure_url;
+      this.showLoader = false;
+    },
     onMapClick(e) {
       if (this.userStationsLeft > 0) this.addMarker(e);
     },
@@ -843,8 +850,7 @@ export default {
           const reader = new FileReader();
           reader.onload = function() {
             const base64Str = reader.result.split(",")[1];
-            that.showLoader = true;
-            console.log(base64Str);
+
             var myHeaders = new Headers();
             myHeaders.append(
               "Content-Type",
@@ -864,8 +870,10 @@ export default {
             const urlToCloudinaryUploader =
               "https://tut-quiz.herokuapp.com/upload";
             fetch(urlToCloudinaryUploader, requestOptions)
-              .then(response => response.text())
-              .then(result => console.log(result))
+              .then(response => response.json())
+              .then(result => {
+                that.handleResult(result);
+              })
               .catch(error => console.log("error", error));
           };
           reader.readAsDataURL(blob);
@@ -910,6 +918,7 @@ export default {
       this.markers.pop();
     },
     showResults() {
+      this.showLoader = true;
       this.zoom = 11;
       const that = this;
       setTimeout(function() {
