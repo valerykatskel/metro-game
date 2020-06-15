@@ -35,9 +35,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -242,9 +242,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="runGameAgain">
-        Начать заново
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="runGameAgain"
+        >Начать заново</ui-button
+      >
 
       <div class="sharing-list">
         <ShareNetwork
@@ -262,7 +262,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import "leaflet";
 import { latLngBounds } from "leaflet";
 import {
@@ -756,10 +755,6 @@ export default {
         zoomSnap: true
       },
       markers: [],
-      postBody: {
-        // пример данных для отправки(позже они преобразуются в json)
-        base64Str: ""
-      },
 
       mapScreenshot: "",
       zoom: 11,
@@ -847,26 +842,31 @@ export default {
         .then(blob => {
           const reader = new FileReader();
           reader.onload = function() {
-            that.postBody.base64Str = reader.result.split(",")[1];
+            const base64Str = reader.result.split(",")[1];
             that.showLoader = true;
-            //const jsonData = JSON.stringify(that.postBody);
+            console.log(base64Str);
+            var myHeaders = new Headers();
+            myHeaders.append(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
 
-            var config = {
-              headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/x-www-form-urlencoded"
-              }
+            var urlencoded = new URLSearchParams();
+            urlencoded.append("base64Str", base64Str);
+
+            var requestOptions = {
+              method: "POST",
+              headers: myHeaders,
+              body: urlencoded,
+              redirect: "follow"
             };
-            var data = new FormData(); // Currently empty
-            data.append("base64Str", reader.result.split(",")[1]);
-
-            axios
-              .post("http://localhost:8088/upload/", data, config)
-              .then(response => {
-                that.showLoader = false;
-                that.mapScreenshot = response.secure_url;
-                that.gameStep = 3;
-              });
+            //const urlToCloudinaryUploader = "http://localhost:8088/upload";
+            const urlToCloudinaryUploader =
+              "https://tut-quiz.herokuapp.com/upload";
+            fetch(urlToCloudinaryUploader, requestOptions)
+              .then(response => response.text())
+              .then(result => console.log(result))
+              .catch(error => console.log("error", error));
           };
           reader.readAsDataURL(blob);
         })
