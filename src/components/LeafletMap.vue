@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -60,8 +60,6 @@
         @click="onMapClick"
       >
         <l-tile-layer
-          v-for="tileProvider in tileProviders"
-          :key="tileProvider.name"
           :name="tileProvider.name"
           :url="tileProvider.url"
           layer-type="base"
@@ -77,7 +75,7 @@
           </div>
         </l-control>
 
-        <l-control-zoom :position="zoomPosition" />
+        <l-control-zoom position="bottomright" />
 
         <l-layer-group
           v-for="item in metroData"
@@ -175,8 +173,6 @@
             style="height: 235px; width: 100%;"
           >
             <l-tile-layer
-              v-for="tileProvider in tileProviders"
-              :key="tileProvider.name"
               :name="tileProvider.name"
               :url="tileProvider.url"
               layer-type="base"
@@ -285,15 +281,6 @@ import AppLoader from "./AppLoader";
 import SectionHeader from "./SectionHeader";
 
 import { gsap } from "gsap";
-const tileProviders = [
-  {
-    name: "MapBox light-v9",
-    visible: true,
-    attribution: "",
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
-  }
-];
 
 const stations = [
   {
@@ -751,23 +738,25 @@ export default {
       gameStep: 1,
       inputParams: {},
       simpleMapScreenshoter: null,
+      showLoader: false,
+      mapScreenshot: "",
+      markers: [],
       center: [53.9, 27.56667],
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
         zoomSnap: true
       },
-      markers: [],
-      showLoader: false,
-      mapScreenshot: "",
       zoom: 11,
-      distanceBetweenStantions: 0.2,
       minZoom: 11,
       maxZoom: 15,
-      zoomPosition: "bottomright",
-      imperial: false,
-      Positions: ["topleft", "topright", "bottomleft", "bottomright"],
-      tileProviders: tileProviders,
+      tileProvider: {
+        name: "MapBox light-v9",
+        visible: true,
+        attribution: "",
+        url:
+          "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+      },
       userStationsCount: 14,
       iconSize: 20,
       iconAnchor: [20, 51],
@@ -945,6 +934,8 @@ export default {
     runGameAgain() {
       this.gameStep = 1;
       this.markers = [];
+      this.simpleMapScreenshoter = null;
+      this.mapScreenshot = "";
       this.runTonnelAnimation();
     },
     getStations1Coords: () => stations.filter(el => el.line === 1),
