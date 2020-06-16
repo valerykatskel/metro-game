@@ -1,5 +1,5 @@
 <template>
-  <ul class="b-sharelist">
+  <ul class="b-sharelist app-sharelist">
     <li class="b-sharelist__li">
       <a
         id="share-vk"

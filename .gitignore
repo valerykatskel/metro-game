@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# sandbox deploy instructions
+deploy-sandbox.sh
+
 # local env files
 .env.local
 .env.*.local

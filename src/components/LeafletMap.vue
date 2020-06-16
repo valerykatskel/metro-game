@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -805,11 +805,12 @@ export default {
       const that = this;
       img.onload = () => {
         let sharelist = Array.from(
-          document.querySelectorAll(".b-sharelist__li")
+          document.querySelectorAll(".app-sharelist .b-sharelist__li")
         );
 
         sharelist.forEach(el => {
           const link = el.querySelector("a");
+          debugger;
           const network = link.id;
 
           const shareTutByLink = encodeURIComponent("https://share.tut.by?");
