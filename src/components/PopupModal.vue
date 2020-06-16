@@ -10,7 +10,7 @@
           </a>
           <img
             class="app-modal-header-image"
-            :src="require('../assets/images/popup-header-image.png')"
+            src="https://img.tyt.by/news/special/metro-game/popup-header-image.png"
             alt
           />
           <div class="app-modal-header">

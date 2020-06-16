@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -810,7 +810,7 @@ export default {
 
         sharelist.forEach(el => {
           const link = el.querySelector("a");
-          debugger;
+
           const network = link.id;
 
           const shareTutByLink = encodeURIComponent("https://share.tut.by?");
