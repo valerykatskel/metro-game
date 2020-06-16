@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -874,7 +874,7 @@ export default {
               .then(result => {
                 that.handleResult(result);
               })
-              .catch(error => console.log("error", error));
+              .catch(error => console.log(error));
           };
           reader.readAsDataURL(blob);
         })
@@ -944,6 +944,7 @@ export default {
     },
     runGameAgain() {
       this.gameStep = 1;
+      this.markers = [];
       this.runTonnelAnimation();
     },
     getStations1Coords: () => stations.filter(el => el.line === 1),
