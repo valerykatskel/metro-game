@@ -3,7 +3,7 @@
     xmlns="http://www.w3.org/2000/svg"
     :width="width"
     :height="height"
-    viewBox="0 0 14 14"
+    :viewBox="viewbox"
     :aria-labelledby="iconName"
     role="presentation"
   >
@@ -23,15 +23,20 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: 14
+      default: 20
     },
     height: {
       type: [Number, String],
-      default: 14
+      default: 20
     },
     iconColor: {
       type: String,
       default: "currentColor"
+    }
+  },
+  computed: {
+    viewbox() {
+      return `0 0 ${this.width} ${this.height}`;
     }
   }
 };
@@ -40,7 +45,6 @@ export default {
 <style scoped>
 svg {
   display: inline-block;
-  vertical-align: baseline;
-  margin-bottom: -2px; /* yes, I'm that particular about formatting */
+  vertical-align: middle;
 }
 </style>
