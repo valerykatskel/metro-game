@@ -36,9 +36,9 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -242,19 +242,8 @@
       <ui-button button-class="start-game-button start" @click="runGameAgain"
         >Начать заново</ui-button
       >
-
-      <div class="sharing-list">
-        <ShareNetwork
-          network="facebook"
-          url="https://news.vuejs.org/issues/180"
-          title="Say hi to Vite! A brand new, extremely fast development setup for Vue."
-          description="This week, I’d like to introduce you to 'Vite', which means 'Fast'. It’s a brand new development setup created by Evan You."
-          quote="The hot reload is so fast it\'s near instant. - Evan You"
-          hashtags="vuejs,vite"
-          >Share on Facebook</ShareNetwork
-        >
-      </div>
     </section>
+    <sharing-list v-show="gameStep === 3" />
   </div>
 </template>
 
@@ -279,6 +268,7 @@ import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
 import AppLoader from "./AppLoader";
 import SectionHeader from "./SectionHeader";
+import SharingList from "./SharingList";
 
 import { gsap } from "gsap";
 
@@ -731,7 +721,8 @@ export default {
     PopupModal,
     AppLoader,
     UiButton,
-    SectionHeader
+    SectionHeader,
+    SharingList
   },
   data() {
     return {
@@ -810,9 +801,63 @@ export default {
       if (showResult) this.showResults();
     },
     handleResult(res) {
-      this.gameStep = 3;
-      this.mapScreenshot = res.secure_url;
-      this.showLoader = false;
+      const img = new Image();
+      const that = this;
+      img.onload = () => {
+        let sharelist = Array.from(
+          document.querySelectorAll(".b-sharelist__li")
+        );
+
+        sharelist.forEach(el => {
+          const link = el.querySelector("a");
+          const network = link.id;
+
+          const shareTutByLink = encodeURIComponent("https://share.tut.by?");
+          const url = encodeURIComponent(that.inputParams.sharingUrl);
+          const title = encodeURIComponent(that.inputParams.sharingTitle);
+          const image = encodeURIComponent(res.secure_url);
+
+          var shareData = btoa(JSON.stringify({ url, title, image }))
+            .replace(/=+$/g, "")
+            .replace(/(.)(.)/g, "$2$1");
+
+          if (network === "shareLinkFB")
+            link.setAttribute(
+              "href",
+              `https://www.facebook.com/sharer.php?u=${shareTutByLink}${shareData}`
+            );
+          else if (network === "share-vk")
+            link.setAttribute(
+              "href",
+              `https://vk.com/share.php?url=${url}&title=${title}&description="description"&image=${image}&noparse=true`
+            );
+          else if (network === "shareLinkTW")
+            link.setAttribute(
+              "href",
+              `https://twitter.com/share?url=${url}&text=${title}`
+            );
+          else if (network === "shareLinkOD")
+            link.setAttribute(
+              "href",
+              `https://connect.ok.ru/offer?url=${shareTutByLink}${shareData}`
+            );
+          else if (network === "shareLinkTG")
+            link.setAttribute(
+              "href",
+              `https://t.me/share/url?url=${shareTutByLink}${shareData}`
+            );
+          else if (network === "shareLinkVB")
+            link.setAttribute(
+              "href",
+              `viber://forward?text=${shareTutByLink}${shareData}`
+            );
+        });
+
+        this.gameStep = 3;
+        this.mapScreenshot = res.secure_url;
+        this.showLoader = false;
+      };
+      img.src = res.secure_url;
     },
     onMapClick(e) {
       if (this.userStationsLeft > 0) this.addMarker(e);
@@ -1111,6 +1156,7 @@ export default {
   display: flex;
   flex-direction: row;
   margin-top: 25px;
+  margin-bottom: 30px;
 
   .result-map {
     width: 50%;
@@ -1194,52 +1240,6 @@ export default {
     img {
       vertical-align: bottom;
     }
-  }
-}
-
-.sharing-list {
-  height: 30px;
-
-  span {
-    // cursor: pointer;
-    // display: inline-block;
-    // background-color: rgba(255, 255, 255, 0.35);
-    // margin-left: 5px;
-    // width: 30px;
-    // height: 30px;
-    // background-position: 50%;
-    // background-repeat: no-repeat;
-    // transition: background-color 300ms;
-    // opacity: 0.5;
-
-    // &:hover {
-    //   opacity: 1;
-    //   background-color: rgba(255, 255, 255, 0.45);
-    // }
-
-    // &:first-child {
-    //   margin-left: 0;
-    // }
-
-    // &[data-link="#share-facebook"] {
-    //   background-image: url("../images/icons/icon-fb.svg");
-    // }
-
-    // &[data-link="#share-vk"] {
-    //   background-image: url("../images/icons/icon-vk.svg");
-    // }
-
-    // &[data-link="#share-viber"] {
-    //   background-image: url("../images/icons/icon-vk.svg");
-    // }
-
-    // &[data-link="#share-twitter"] {
-    //   background-image: url("../images/icons/icon-vk.svg");
-    // }
-
-    // &[data-link="#share-odnoklassniki"] {
-    //   background-image: url("../images/icons/ap-icon-ok.svg");
-    // }
   }
 }
 </style>
