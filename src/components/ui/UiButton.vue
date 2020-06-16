@@ -40,19 +40,31 @@ export default {
   color: #fff;
   border-radius: 3px;
   cursor: pointer;
-
+  transition: background-color 300ms ease;
+  &:hover {
+    background: #7da830;
+  }
   &[disabled] {
     background: rgba(132, 177, 50, 0.5);
     cursor: default;
+    &:hover {
+      background: rgba(132, 177, 50, 0.5);
+    }
   }
 
   &.light {
     background: #f2f2f2;
     color: #1d1d1f;
+    &:hover {
+      background: #e6e6e6;
+    }
   }
 
   &.start {
     background: #fb6483;
+    &:hover {
+      background: #ee5f7c;
+    }
   }
 }
 </style>
