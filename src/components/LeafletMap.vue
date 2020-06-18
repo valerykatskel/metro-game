@@ -2,11 +2,11 @@
   <div>
     <app-loader v-if="showLoader" />
     <popup-modal
-      v-if="showPopup"
+      v-if="popup.show"
       @onShowResult="closePopup(true)"
       @onClosePopup="closePopup"
     >
-      <p slot="header">{{ inputParams.finalPopupText }}</p>
+      <p slot="header">{{ popup.text }}</p>
       <template slot="button">{{ inputParams.finalPopupButton }}</template>
     </popup-modal>
 
@@ -20,9 +20,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -755,12 +755,15 @@ export default {
       maxLat: 53.9808,
       minLng: 27.382,
       maxLng: 27.844,
-      showPopup: false
+      popup: {
+        show: false,
+        text: ""
+      }
     };
   },
   methods: {
     closePopup(showResult) {
-      this.showPopup = false;
+      this.popup.show = false;
       if (showResult) this.showResults();
     },
     handleResult(res) {
@@ -910,7 +913,10 @@ export default {
         className: "user-marker"
       };
       this.markers.push(newMarker);
-      if (this.markers.length === this.userStationsCount) this.showPopup = true;
+      if (this.markers.length === this.userStationsCount) {
+        this.popup.text = this.inputParams.finalPopupText;
+        this.popup.show = true;
+      }
     },
     removeLast() {
       this.markers.pop();
