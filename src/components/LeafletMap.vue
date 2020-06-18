@@ -20,9 +20,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -50,13 +50,13 @@
         <l-control-zoom position="bottomright" />
 
         <l-layer-group
-          v-for="item in metroData"
+          v-for="item in map.data"
           :key="item.id"
           :visible.sync="item.visible"
           layer-type="overlay"
           :name="item.name"
         >
-          <l-layer-group :visible="item.markersVisible">
+          <l-layer-group>
             <l-circle-marker
               v-for="marker in item.markers"
               :key="marker.id"
@@ -145,13 +145,13 @@
             <l-tile-layer :url="map.tileUrl" layer-type="base" />
 
             <l-layer-group
-              v-for="item in metroData"
+              v-for="item in map.data"
               :key="item.id"
               :visible.sync="item.visible"
               layer-type="overlay"
               :name="item.name"
             >
-              <l-layer-group :visible="item.markersVisible">
+              <l-layer-group>
                 <l-circle-marker
                   v-for="marker in item.markers"
                   :key="marker.id"
@@ -703,6 +703,32 @@ export default {
       mapScreenshot: "",
       markers: [],
       map: {
+        data: [
+          {
+            id: "l1",
+            name: "Московская линия",
+            markers: this.getStations1Coords(),
+            polyline: {
+              points: this.getLine1Coords(),
+              visible: true,
+              color: "#4692F0"
+            },
+            markersColor: "#4692F0",
+            visible: true
+          },
+          {
+            id: "l2",
+            name: "Заводская линия",
+            markers: this.getStations2Coords(),
+            polyline: {
+              points: this.getLine2Coords(),
+              visible: true,
+              color: "#FB6483"
+            },
+            markersColor: "#FB6483",
+            visible: true
+          }
+        ],
         options: {
           zoomControl: false,
           attributionControl: false,
@@ -729,35 +755,6 @@ export default {
       maxLat: 53.9808,
       minLng: 27.382,
       maxLng: 27.844,
-
-      metroData: [
-        {
-          id: "l1",
-          name: "Московская линия",
-          markers: this.getStations1Coords(),
-          polyline: {
-            points: this.getLine1Coords(),
-            visible: true,
-            color: "#4692F0"
-          },
-          markersColor: "#4692F0",
-          visible: true,
-          markersVisible: true
-        },
-        {
-          id: "l2",
-          name: "Заводская линия",
-          markers: this.getStations2Coords(),
-          polyline: {
-            points: this.getLine2Coords(),
-            visible: true,
-            color: "#FB6483"
-          },
-          markersColor: "#FB6483",
-          visible: true,
-          markersVisible: true
-        }
-      ],
       showPopup: false
     };
   },
