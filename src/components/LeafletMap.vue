@@ -20,9 +20,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -32,31 +32,19 @@
       />
       <l-map
         ref="map"
-        :zoom.sync="zoom"
-        :min-zoom="minZoom"
-        :max-zoom="maxZoom"
-        :zoomAnimation="true"
-        :options="mapOptions"
-        :center="center"
-        :bounds="bounds"
-        :max-bounds="maxBounds"
+        :zoom="map.zoom.value"
+        :min-zoom="map.zoom.min"
+        :max-zoom="map.zoom.max"
+        :options="map.options"
+        :bounds="map.bounds"
+        :max-bounds="map.bounds"
         style="height: 480px; width: 100%;"
         @click="onMapClick"
       >
-        <l-tile-layer
-          :name="tileProvider.name"
-          :url="tileProvider.url"
-          layer-type="base"
-        />
+        <l-tile-layer :url="map.tileUrl" layer-type="base" />
 
         <l-control position="topleft">
-          <div class="stations-count">
-            <span v-if="userStationsLeft > 0">
-              Еще можно поставить точек
-              <span class="label">{{ userStationsLeft }}</span>
-            </span>
-            <span v-else>Точек не осталось</span>
-          </div>
+          <user-stations-info :count="userStationsLeft" />
         </l-control>
 
         <l-control-zoom position="bottomright" />
@@ -146,21 +134,15 @@
 
         <div class="result-map gov-map">
           <l-map
-            ref="map"
             :zoom="10"
             :min-zoom="10"
             :max-zoom="10"
-            :options="mapOptions"
-            :center="center"
-            :bounds="bounds"
-            :max-bounds="maxBounds"
+            :options="map.options"
+            :bounds="map.bounds"
+            :max-bounds="map.bounds"
             style="height: 235px; width: 100%;"
           >
-            <l-tile-layer
-              :name="tileProvider.name"
-              :url="tileProvider.url"
-              layer-type="base"
-            />
+            <l-tile-layer :url="map.tileUrl" layer-type="base" />
 
             <l-layer-group
               v-for="item in metroData"
@@ -254,6 +236,7 @@ import AppLoader from "./AppLoader";
 import SectionHeader from "./SectionHeader";
 import SharingList from "./SharingList";
 import AnimationStartSlide from "./AnimationStartSlide";
+import UserStationsInfo from "./UserStationsInfo";
 
 import { gsap } from "gsap";
 
@@ -708,7 +691,8 @@ export default {
     UiButton,
     SectionHeader,
     SharingList,
-    AnimationStartSlide
+    AnimationStartSlide,
+    UserStationsInfo
   },
   data() {
     return {
@@ -718,22 +702,25 @@ export default {
       showLoader: false,
       mapScreenshot: "",
       markers: [],
-      center: [53.9, 27.56667],
-      mapOptions: {
-        zoomControl: false,
-        attributionControl: false,
-        zoomSnap: true
-      },
-      zoom: 11,
-      minZoom: 11,
-      maxZoom: 15,
-      tileProvider: {
-        name: "MapBox light-v9",
-        visible: true,
-        attribution: "",
-        url:
+      map: {
+        options: {
+          zoomControl: false,
+          attributionControl: false,
+          zoomSnap: true
+        },
+        zoom: {
+          value: 11,
+          minZoom: 11,
+          maxZoom: 15
+        },
+        bounds: latLngBounds([
+          [53.8058, 27.382],
+          [53.9808, 27.844]
+        ]),
+        tileUrl:
           "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
       },
+
       userStationsCount: 14,
       iconSize: 20,
       iconAnchor: [20, 51],
@@ -742,14 +729,7 @@ export default {
       maxLat: 53.9808,
       minLng: 27.382,
       maxLng: 27.844,
-      bounds: latLngBounds([
-        [53.8058, 27.382],
-        [53.9808, 27.844]
-      ]),
-      maxBounds: latLngBounds([
-        [53.8058, 27.382],
-        [53.9808, 27.844]
-      ]),
+
       metroData: [
         {
           id: "l1",
@@ -940,7 +920,7 @@ export default {
     },
     showResults() {
       this.showLoader = true;
-      this.zoom = 11;
+      this.map.zoom.value = 11;
       const that = this;
       setTimeout(function() {
         that.getScreenShot();
@@ -1061,30 +1041,7 @@ export default {
   width: 20px;
   height: 20px;
 }
-.stations-count {
-  margin: 5px 0 0 5px;
-  background: #fff;
-  border-radius: 3px;
-  height: 35px;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  color: #1d1d1f;
-  font-size: 13px;
-  font-family: Arial, Helvetica, sans-serif;
-  .label {
-    display: inline-block;
-    border-radius: 50%;
-    margin-left: 10px;
-    width: 25px;
-    height: 25px;
-    font-size: 13px;
-    display: inline-block;
-    background: #84b132;
-    color: #fff;
-    line-height: 25px;
-  }
-}
+
 .user-marker {
   span {
     display: inline-block;
