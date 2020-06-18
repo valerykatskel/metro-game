@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -731,6 +731,10 @@ export default {
             visible: true
           }
         ],
+        minLat: 53.8058,
+        maxLat: 53.9808,
+        minLng: 27.382,
+        maxLng: 27.844,
         options: {
           zoomControl: false,
           attributionControl: false,
@@ -753,10 +757,7 @@ export default {
       iconSize: 20,
       iconAnchor: [20, 51],
       // cell size = 7x5 [66x35]
-      minLat: 53.8058,
-      maxLat: 53.9808,
-      minLng: 27.382,
-      maxLng: 27.844,
+
       popup: {
         show: false,
         showButton: false,
@@ -886,39 +887,39 @@ export default {
           console.error(e.toString());
         });
     },
-    getLatLngForUserMarker() {
-      const latDelta = this.maxLat - this.minLat;
-      const lngDelta = this.maxLng - this.minLng;
-      const rndLat = Math.random() * latDelta;
-      const rndLng = Math.random() * lngDelta;
-      const lat = this.minLat + rndLat;
-      const lng = this.minLng + rndLng;
-      return { lat, lng };
+    canAddMarker(lat, lng) {
+      return (
+        lat >= this.map.minLat &&
+        lat <= this.map.maxLat &&
+        lng >= this.map.minLng &&
+        lng <= this.map.maxLng
+      );
     },
     addMarker(e) {
-      let position;
+      const position = [e.latlng.lat, e.latlng.lng];
 
-      if (e.latlng !== undefined) {
-        position = [e.latlng.lat, e.latlng.lng];
+      if (this.canAddMarker(...position)) {
+        const newMarker = {
+          id: this.markers.length + 1,
+          line: -1,
+          position: position,
+          active: true,
+          draggable: true,
+          visible: true,
+          icon: "https://img.tyt.by/news/special/metro-game/green-marker.png",
+          icon2x:
+            "https://img.tyt.by/news/special/metro-game/green-marker@2x.png",
+          className: "user-marker"
+        };
+        this.markers.push(newMarker);
+        if (this.markers.length === this.userStationsCount) {
+          this.popup.text = this.inputParams.finalPopupText;
+          this.popup.showButton = true;
+          this.popup.show = true;
+        }
       } else {
-        position = this.getLatLngForUserMarker();
-      }
-      const newMarker = {
-        id: this.markers.length + 1,
-        line: -1,
-        position: position,
-        active: true,
-        draggable: true,
-        visible: true,
-        icon: "https://img.tyt.by/news/special/metro-game/green-marker.png",
-        icon2x:
-          "https://img.tyt.by/news/special/metro-game/green-marker@2x.png",
-        className: "user-marker"
-      };
-      this.markers.push(newMarker);
-      if (this.markers.length === this.userStationsCount) {
-        this.popup.text = this.inputParams.finalPopupText;
-        this.popup.showButton = true;
+        this.popup.showButton = false;
+        this.popup.text = "Нельзя ставить точки за пределами Минска!";
         this.popup.show = true;
       }
     },

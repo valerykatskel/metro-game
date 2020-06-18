@@ -17,12 +17,12 @@
             <slot name="header"></slot>
           </div>
 
-          <div class="app-modal-body">
+          <div v-if="hasBodySlot" class="app-modal-body">
             <slot name="body"></slot>
           </div>
 
-          <div class="app-modal-footer">
-            <ui-button @click="$emit('onShowResult')">
+          <div v-if="hasButtonSlot" class="app-modal-footer">
+            <ui-button buttonClass="start" @click="$emit('onShowResult')">
               <slot name="button"></slot>
             </ui-button>
           </div>
@@ -42,6 +42,14 @@ export default {
     UiButton,
     IconBase,
     IconClose
+  },
+  computed: {
+    hasButtonSlot() {
+      return !!this.$slots["button"];
+    },
+    hasBodySlot() {
+      return !!this.$slots["body"];
+    }
   }
 };
 </script>
@@ -98,7 +106,10 @@ export default {
 .app-modal-header {
   margin-top: 12px;
   p {
-    margin: 0 0 15px 0;
+    &:first-child {
+      margin-top: 0;
+    }
+    margin: 15px 0 0 0;
     font-size: 17px;
     line-height: 23px;
     font-weight: bold;
@@ -125,6 +136,7 @@ export default {
   opacity: 0;
 }
 .app-modal-footer {
+  margin-top: 15px;
   .button {
     width: 100%;
   }
