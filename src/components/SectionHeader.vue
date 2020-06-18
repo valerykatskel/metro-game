@@ -41,29 +41,61 @@ export default {
 
   .section-label {
     color: #808080;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: left;
+    margin-bottom: 10px;
   }
   .section-meta {
+    text-align: left;
     p {
       margin: 0;
       color: #808080;
-      font-size: 12px;
-      line-height: 17px;
+      font-size: 13px;
+      line-height: 18px;
     }
   }
 
   .description {
     p {
       margin-bottom: 0;
-      margin-top: 20px;
-      font-size: 17px;
-      line-height: 25px;
+      margin-top: 15px;
+      font-size: 15px;
+      line-height: 23px;
+      text-align: left;
     }
   }
   h2 {
     margin-top: 0;
-    margin-bottom: 14px;
-    font-size: 35px;
-    line-height: 41px;
+    margin-bottom: 15px;
+    font-size: 21px;
+    line-height: 27px;
+    text-align: left;
+  }
+}
+
+@media (min-width: 481px) {
+  .section-header {
+    .section-label {
+      text-align: center;
+    }
+    h2 {
+      text-align: center;
+      font-size: 35px;
+      line-height: 41px;
+      margin-bottom: 20px;
+    }
+    .section-meta {
+      text-align: center;
+    }
+    .description {
+      p {
+        text-align: center;
+        font-size: 17px;
+        line-height: 25px;
+        margin-top: 20px;
+      }
+    }
   }
 }
 </style>

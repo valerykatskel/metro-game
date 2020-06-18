@@ -1,7 +1,9 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueSocialSharing from "vue-social-sharing";
+import VueResizeObserver from "vue-resize-observer";
 
+Vue.use(VueResizeObserver);
 Vue.use(VueSocialSharing);
 Vue.config.productionTip = false;
 

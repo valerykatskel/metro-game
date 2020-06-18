@@ -18,27 +18,11 @@
         :section-description="inputParams.startText"
       />
 
-      <div class="section-image start-animation-metro">
-        <div class="metro-bg-01">
-          <img
-            src="https://img.tyt.by/news/special/metro-game/tunnel-inner.png"
-            alt
-          />
-        </div>
-        <div class="metro-bg-02">
-          <img
-            src="https://img.tyt.by/news/special/metro-game/tunnel.png"
-            alt
-          />
-        </div>
-        <div class="metro-bg-03">
-          <img src="https://img.tyt.by/news/special/metro-game/metro.png" alt />
-        </div>
-      </div>
+      <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -269,6 +253,7 @@ import PopupModal from "./PopupModal";
 import AppLoader from "./AppLoader";
 import SectionHeader from "./SectionHeader";
 import SharingList from "./SharingList";
+import AnimationStartSlide from "./AnimationStartSlide";
 
 import { gsap } from "gsap";
 
@@ -722,7 +707,8 @@ export default {
     AppLoader,
     UiButton,
     SectionHeader,
-    SharingList
+    SharingList,
+    AnimationStartSlide
   },
   data() {
     return {
@@ -969,6 +955,8 @@ export default {
       const metroEl = document.querySelector(".metro-bg-03");
       const tonnelEl = document.querySelector(".metro-bg-01");
       const startGameBtn = document.querySelector(".start-game-button");
+      console.log(gsap);
+
       gsap.fromTo(tonnelEl, 1, { opacity: 0 }, { opacity: 1 });
       gsap.fromTo(metroEl, 0.8, { left: -600 }, { left: 0 });
       gsap.fromTo(
@@ -1201,46 +1189,6 @@ export default {
   .start-game-button {
     opacity: 0;
     width: 100%;
-  }
-}
-
-.start-animation-metro {
-  position: relative;
-  width: 600px;
-  height: 340px;
-  margin: 0 auto;
-  overflow: hidden;
-  margin-bottom: 30px;
-
-  .metro-bg-01 {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-    opacity: 1;
-    img {
-      vertical-align: bottom;
-    }
-  }
-  .metro-bg-02 {
-    position: absolute;
-    left: -104px;
-    bottom: 0;
-    z-index: 10;
-    img {
-      vertical-align: bottom;
-    }
-  }
-  .metro-bg-03 {
-    position: absolute;
-    left: -600px;
-    bottom: 0;
-    z-index: 5;
-    transition: left 1500ms cubic-bezier(0.24, 0.65, 0.53, 0.96);
-
-    img {
-      vertical-align: bottom;
-    }
   }
 }
 </style>
