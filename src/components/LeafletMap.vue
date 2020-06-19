@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -210,7 +210,9 @@
       <ui-button button-class="light" @click="runGameAgain"
         >Начать заново</ui-button
       >
+      <div v-if="!isNull(commentsBlock)" v-html="commentsBlock" />
     </section>
+
     <sharing-list v-show="gameStep === 3" />
   </div>
 </template>
@@ -753,6 +755,7 @@ export default {
           "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
       },
 
+      commentsBlock: null,
       userStationsCount: 14,
       iconSize: 20,
       iconAnchor: [20, 51],
@@ -966,16 +969,20 @@ export default {
 
     getStations3Coords: () => stations.filter(el => el.line === 3),
 
-    getLine1Coords: function() {
+    getLine1Coords() {
       return this.getStations1Coords().map(el => el.position);
     },
 
-    getLine2Coords: function() {
+    getLine2Coords() {
       return this.getStations2Coords().map(el => el.position);
     },
 
-    getLine3Coords: function() {
+    getLine3Coords() {
       return this.getStations3Coords().map(el => el.position);
+    },
+
+    isNull(val) {
+      return typeof val === "object" && !val;
     }
   },
 
@@ -984,6 +991,11 @@ export default {
       this.inputParams = window.inputData;
 
       this.runTonnelAnimation();
+
+      // const commentsBlock = document.querySelector(".b-comments");
+      // if (!this.isNull(commentsBlock)) {
+      //   this.commentsBlock = commentsBlock;
+      // }
     });
   },
   computed: {
