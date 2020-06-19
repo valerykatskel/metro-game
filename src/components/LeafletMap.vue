@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -120,7 +120,7 @@
       </div>
     </section>
 
-    <section v-if="gameStep === 3">
+    <section v-if="gameStep === 3" class="section-finish">
       <section-header
         :section-header="inputParams.finalHeader"
         :section-description="inputParams.finalText"
@@ -207,7 +207,7 @@
         </div>
       </div>
 
-      <ui-button button-class="start-game-button start" @click="runGameAgain"
+      <ui-button button-class="light" @click="runGameAgain"
         >Начать заново</ui-button
       >
     </section>
@@ -1153,6 +1153,11 @@ export default {
   }
   .start-game-button {
     opacity: 0;
+    width: 100%;
+  }
+}
+.section-finish {
+  .button {
     width: 100%;
   }
 }
