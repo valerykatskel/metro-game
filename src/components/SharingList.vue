@@ -102,6 +102,7 @@
 .desktop {
   .app-sharelist {
     margin-top: 20px;
+    display: inline-block;
     header {
       margin-bottom: 10px;
       font-size: 15px;
@@ -110,6 +111,12 @@
   }
   .b-sharelist {
     list-style-type: none;
+    margin-top: 0;
+    padding: 0;
+    .b-sharelist__li {
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
 
   @media (min-width: 481px) {
