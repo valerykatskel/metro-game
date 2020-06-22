@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -128,7 +128,9 @@
 
       <div class="game-results">
         <div class="result-map user-map">
-          <img :src="mapScreenshot" alt />
+          <div class="user-map-wrapper">
+            <img :src="mapScreenshot" alt />
+          </div>
           <div class="map-description">
             {{ inputParams.userMapDescription }}
           </div>
@@ -1120,12 +1122,11 @@ export default {
 }
 .game-results {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 25px;
   margin-bottom: 30px;
 
   .result-map {
-    width: 50%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1142,15 +1143,22 @@ export default {
     figure {
       margin: 0;
     }
-    &:first-child {
-      margin-right: 6px;
-    }
-
-    &:last-child {
-      margin-left: 6px;
-    }
     img {
       width: 100%;
+    }
+    &.user-map {
+      .user-map-wrapper {
+        background-color: #f1f1f1;
+      }
+      img {
+        width: 100%;
+        height: 235px;
+        object-fit: cover;
+      }
+    }
+
+    &.gov-map {
+      margin-top: 20px;
     }
   }
 }
@@ -1171,6 +1179,38 @@ export default {
 .section-finish {
   .button {
     width: 100%;
+  }
+}
+@media (min-width: 640px) {
+  .game-results {
+    display: flex;
+    flex-direction: row;
+    .result-map {
+      width: 50%;
+      &:first-child {
+        margin-right: 6px;
+      }
+
+      &:last-child {
+        margin-left: 6px;
+      }
+      &.gov-map {
+        margin-top: 0;
+      }
+    }
+  }
+}
+@media (min-width: 334px) {
+  .game-results {
+    .result-map {
+      &.user-map {
+        img {
+          height: 235px;
+          object-fit: scale-down;
+          vertical-align: bottom;
+        }
+      }
+    }
   }
 }
 </style>
