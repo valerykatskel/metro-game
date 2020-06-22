@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -1116,11 +1116,6 @@ export default {
 </script>
 
 <style lang="scss">
-#metro-lines-settings {
-  th {
-    text-align: left;
-  }
-}
 .leaflet-control-simpleMapScreenshoter {
   border: none;
 }
@@ -1254,12 +1249,16 @@ export default {
     width: 100%;
   }
 }
-.b-add-comments {
-  margin-top: 20px;
+.section-finish {
+  .b-add_comments {
+    margin-top: 20px;
+  }
 }
 @media (min-width: 640px) {
-  .b-add-comments {
-    margin-top: 15px;
+  .section-finish {
+    .b-add_comments {
+      margin-top: 15px;
+    }
   }
   .game-results {
     display: flex;
