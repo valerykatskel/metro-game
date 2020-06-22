@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2">
@@ -128,9 +128,75 @@
 
       <div class="game-results">
         <div class="result-map user-map">
-          <div class="user-map-wrapper">
+          <!-- <div class="user-map-wrapper">
             <img :src="mapScreenshot" alt />
-          </div>
+          </div>-->
+          <l-map
+            :zoom="10"
+            :min-zoom="10"
+            :max-zoom="10"
+            :options="map.options"
+            :bounds="map.bounds"
+            :max-bounds="map.bounds"
+            style="height: 235px; width: 100%;"
+          >
+            <l-tile-layer :url="map.tileUrl" layer-type="base" />
+
+            <l-layer-group
+              v-for="item in map.data"
+              :key="item.id"
+              :visible.sync="item.visible"
+              layer-type="overlay"
+              :name="item.name"
+            >
+              <l-layer-group>
+                <l-circle-marker
+                  v-for="marker in item.markers"
+                  :key="marker.id"
+                  :lat-lng="marker.position"
+                  :visible="marker.visible"
+                  :color="item.markersColor"
+                  fillColor="#fff"
+                  :fillOpacity="1.0"
+                  :weight="2"
+                  :radius="4"
+                >
+                  <l-tooltip :content="marker.tooltip" />
+                </l-circle-marker>
+              </l-layer-group>
+              <l-polyline
+                :lat-lngs="item.polyline.points"
+                :visible="item.polyline.visible"
+                :color="item.polyline.color"
+                class="metro-line"
+              />
+            </l-layer-group>
+
+            <l-layer-group
+              v-for="item in this.markers"
+              :key="item.id"
+              :visible.sync="item.visible"
+              layer-type="overlay"
+              :name="item.name"
+            >
+              <l-circle-marker
+                :lat-lng="item.position"
+                :visible="item.visible"
+                color="#84B132"
+                fillColor="#fff"
+                :fillOpacity="1.0"
+                :weight="2"
+                :radius="4"
+              ></l-circle-marker>
+            </l-layer-group>
+
+            <l-polyline
+              :lat-lngs="[...this.getUserLineCoords()]"
+              :visible="true"
+              color="#84B132"
+              class="metro-line-3"
+            />
+          </l-map>
           <div class="map-description">
             {{ inputParams.userMapDescription }}
           </div>
@@ -981,6 +1047,10 @@ export default {
 
     getLine3Coords() {
       return this.getStations3Coords().map(el => el.position);
+    },
+
+    getUserLineCoords() {
+      return this.markers.map(el => el.position);
     },
 
     isNull(val) {

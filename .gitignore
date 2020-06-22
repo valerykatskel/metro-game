@@ -4,6 +4,7 @@ node_modules
 
 # sandbox deploy instructions
 deploy-sandbox.sh
+deploy-prod.sh
 
 # local env files
 .env.local
