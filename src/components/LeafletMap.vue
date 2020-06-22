@@ -908,6 +908,14 @@ export default {
       return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
     getScreenShot() {
+      const commentsBlock = document
+        .querySelector(".b-comments")
+        .innerHTML.trim();
+      console.log(commentsBlock);
+      if (!this.isNull(commentsBlock)) {
+        this.commentsBlock = commentsBlock;
+      }
+
       const map = this.$refs.map.mapObject;
       const that = this;
       if (!this.simpleMapScreenshoter) {
@@ -1063,13 +1071,6 @@ export default {
       this.inputParams = window.inputData;
 
       this.runTonnelAnimation();
-
-      const commentsBlock = document
-        .querySelector(".b-comments")
-        .innerHTML.trim();
-      if (!this.isNull(commentsBlock)) {
-        this.commentsBlock = commentsBlock;
-      }
     });
   },
   computed: {
@@ -1253,7 +1254,13 @@ export default {
     width: 100%;
   }
 }
+.b-add-comments {
+  margin-top: 20px;
+}
 @media (min-width: 640px) {
+  .b-add-comments {
+    margin-top: 15px;
+  }
   .game-results {
     display: flex;
     flex-direction: row;
