@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="app-section start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -33,7 +33,6 @@
         :section-description="inputParams.gameText"
       />
       <l-map
-        ref="map"
         :zoom="map.zoom.value"
         :min-zoom="map.zoom.min"
         :max-zoom="map.zoom.max"
@@ -132,6 +131,7 @@
             <img :src="mapScreenshot" alt />
           </div>-->
           <l-map
+            ref="map"
             :zoom="10"
             :min-zoom="10"
             :max-zoom="10"
@@ -895,7 +895,6 @@ export default {
             );
         });
 
-        this.gameStep = 3;
         this.mapScreenshot = res.secure_url;
         this.showLoader = false;
       };
@@ -1008,7 +1007,7 @@ export default {
     },
     showResults() {
       this.showLoader = true;
-      this.map.zoom.value = 11;
+      this.gameStep = 3;
       const that = this;
       setTimeout(function() {
         that.getScreenShot();
