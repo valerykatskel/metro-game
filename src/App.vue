@@ -16,6 +16,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../node_modules/leaflet/dist/leaflet.css";
 html,
 body {
   height: 100%;
