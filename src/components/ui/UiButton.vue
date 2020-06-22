@@ -34,10 +34,12 @@ export default {
   display: inline-block;
   padding: 0 25px;
   height: 50px;
+  box-shadow: none;
   font-family: Arial;
+  font-weight: normal;
   font-size: 15px;
   line-height: 50px;
-  color: #fff;
+  color: #fff !important;
   border-radius: 3px;
   cursor: pointer;
   transition: background-color 300ms ease;
@@ -54,7 +56,7 @@ export default {
 
   &.light {
     background: #f2f2f2;
-    color: #1d1d1f;
+    color: #1d1d1f !important;
     &:hover {
       background: #e6e6e6;
     }

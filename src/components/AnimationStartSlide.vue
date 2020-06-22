@@ -59,7 +59,7 @@ export default {
     img {
       vertical-align: bottom;
       height: 100%;
-      width: auto;
+      width: auto !important;
     }
   }
 

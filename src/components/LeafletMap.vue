@@ -7,12 +7,12 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
-    <section v-show="gameStep === 1" class="start-section">
+    <section v-show="gameStep === 1" class="app-section start-section">
       <section-header
         :section-label="inputParams.gameLabel"
         :section-header="inputParams.startHeader"
@@ -22,12 +22,12 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
-    <section v-if="gameStep === 2">
+    <section v-if="gameStep === 2" class="app-section">
       <section-header
         :section-header="inputParams.gameHeader"
         :section-description="inputParams.gameText"
@@ -120,7 +120,7 @@
       </div>
     </section>
 
-    <section v-if="gameStep === 3" class="section-finish">
+    <section v-if="gameStep === 3" class="app-section section-finish">
       <section-header
         :section-header="inputParams.finalHeader"
         :section-description="inputParams.finalText"
@@ -812,8 +812,8 @@ export default {
         },
         zoom: {
           value: 11,
-          minZoom: 11,
-          maxZoom: 15
+          min: 11,
+          max: 15
         },
         bounds: latLngBounds([
           [53.8058, 27.382],
@@ -908,14 +908,15 @@ export default {
       return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
     getScreenShot() {
-      const commentsBlock = document
-        .querySelector(".b-comments")
-        .innerHTML.trim();
-      console.log(commentsBlock);
-      if (!this.isNull(commentsBlock)) {
-        this.commentsBlock = commentsBlock;
+      const comments = document.querySelector(".b-comments");
+      if (!this.isNull(comments)) {
+        const commentsBlock = document
+          .querySelector(".b-comments")
+          .innerHTML.trim();
+        if (!this.isNull(commentsBlock)) {
+          this.commentsBlock = commentsBlock;
+        }
       }
-
       const map = this.$refs.map.mapObject;
       const that = this;
       if (!this.simpleMapScreenshoter) {
@@ -1069,7 +1070,19 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.inputParams = window.inputData;
+      let sHeader = this.inputParams.startHeader;
+      let sMeta = this.inputParams.startMeta;
 
+      if (sHeader === undefined || sHeader.length === 0) {
+        this.inputParams.startHeader = document
+          .querySelector(".m_header h1")
+          .innerText.trim();
+      }
+      if (sMeta === undefined || sMeta.length === 0) {
+        this.inputParams.startMeta = document.querySelector(
+          ".b-article-details"
+        ).innerHTML;
+      }
       this.runTonnelAnimation();
     });
   },
@@ -1254,6 +1267,59 @@ export default {
     margin-top: 20px;
   }
 }
+
+.app-section {
+  .section-header {
+    text-align: left;
+    margin-bottom: 25px;
+
+    .section-label {
+      color: #808080;
+      font-size: 13px;
+      line-height: 18px;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    .section-meta {
+      text-align: left;
+
+      font-size: 13px;
+      line-height: 18px;
+      color: #808080;
+      .b-article-details {
+        margin: 0;
+        padding: 0;
+      }
+      p {
+        margin: 0;
+        color: #808080;
+        font-size: 13px;
+        line-height: 18px;
+      }
+      a {
+        color: #808080;
+        text-decoration: none;
+      }
+    }
+
+    .description {
+      p {
+        margin-bottom: 0;
+        margin-top: 15px;
+        font-size: 15px;
+        line-height: 23px;
+        text-align: left;
+      }
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 21px;
+      line-height: 27px;
+      text-align: left;
+    }
+  }
+}
 @media (min-width: 640px) {
   .section-finish {
     .b-add_comments {
@@ -1278,14 +1344,30 @@ export default {
     }
   }
 }
-@media (min-width: 334px) {
-  .game-results {
-    .result-map {
-      &.user-map {
-        img {
-          height: 235px;
-          object-fit: scale-down;
-          vertical-align: bottom;
+
+@media (min-width: 481px) {
+  html:not(.smart) {
+    .app-section {
+      .section-header {
+        .section-label {
+          text-align: center;
+        }
+        h2 {
+          text-align: center;
+          font-size: 35px;
+          line-height: 41px;
+          margin-bottom: 20px;
+        }
+        .section-meta {
+          text-align: center;
+        }
+        .description {
+          p {
+            text-align: center;
+            font-size: 17px;
+            line-height: 25px;
+            margin-top: 20px;
+          }
         }
       }
     }
