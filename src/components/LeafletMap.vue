@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="app-section start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -1053,7 +1053,6 @@ export default {
       const metroEl = document.querySelector(".metro-bg-03");
       const tonnelEl = document.querySelector(".metro-bg-01");
       const startGameBtn = document.querySelector(".start-game-button");
-      console.log(gsap);
 
       gsap.fromTo(tonnelEl, 1, { opacity: 0 }, { opacity: 1 });
       gsap.fromTo(metroEl, 0.8, { left: -600 }, { left: 0 });
