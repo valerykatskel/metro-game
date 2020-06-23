@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="app-section start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -88,6 +88,7 @@
             :visible="marker.visible"
             :draggable="marker.draggable"
             :lat-lng.sync="marker.position"
+            @update:latLng="moveUserMarkerHandler($event, marker.id)"
           >
             <l-icon
               :icon-size="dynamicSize"
@@ -835,7 +836,7 @@ export default {
           [53.98, 27.849] // top-right
         ]),
         tileUrl:
-          "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
+          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       },
 
       commentsBlock: null,
@@ -852,6 +853,13 @@ export default {
     };
   },
   methods: {
+    moveUserMarkerHandler(event, markerId) {
+      this.markers.forEach(el => {
+        if (el.id === markerId) {
+          el.cell = this.getCellNum(event.lat, event.lng);
+        }
+      });
+    },
     closePopup(showResult) {
       this.popup.show = false;
       if (showResult) this.showResults();
@@ -989,6 +997,13 @@ export default {
         lng <= this.map.maxLng
       );
     },
+    getCellNum(lat, lng) {
+      return (
+        Math.floor((lng - this.map.minLng) / 0.007) +
+        1 +
+        Math.floor(36 - (lat - this.map.minLat) / 0.005) * 67
+      );
+    },
     addMarker(e) {
       const position = [e.latlng.lat, e.latlng.lng];
 
@@ -997,6 +1012,7 @@ export default {
           id: this.markers.length + 1,
           line: -1,
           position: position,
+          cell: this.getCellNum(...position),
           active: true,
           draggable: true,
           visible: true,
@@ -1102,34 +1118,29 @@ export default {
   },
   computed: {
     latCoords() {
-      // cell size = 7x5 [67x36]
-      //minLat: 53.8,
-      //maxLat: 53.98,
-      let arr = [];
-      for (let i = 0; i <= 36; i++) {
-        const lat = this.map.minLat + this.map.latDelta * i;
-        arr.push([
-          { lat, lng: this.map.minLng },
-          { lat, lng: this.map.maxLng }
-        ]);
-      }
-      console.log(arr);
-      return arr;
+      return Array.from(Array(37).keys()).map(el => [
+        { lat: this.map.minLat + this.map.latDelta * el, lng: this.map.minLng },
+        { lat: this.map.minLat + this.map.latDelta * el, lng: this.map.maxLng }
+      ]);
     },
     lngCoords() {
-      // cell size = 7x5 [67x36]
-      //minLat: 53.8,
-      //maxLat: 53.98,
-      let arr = [];
-      for (let i = 0; i <= 67; i++) {
-        const lng = this.map.minLng + this.map.lngDelta * i;
-        arr.push([
-          { lat: this.map.minLat, lng },
-          { lat: this.map.maxLat, lng }
-        ]);
-      }
-      console.log(arr);
-      return arr;
+      // in js you can write
+      return Array.from(Array(68).keys()).map(el => [
+        { lat: this.map.minLat, lng: this.map.minLng + this.map.lngDelta * el },
+        { lat: this.map.maxLat, lng: this.map.minLng + this.map.lngDelta * el }
+      ]);
+
+      // instead of
+
+      // let arr = [];
+      // for (let i = 0; i <= 67; i++) {
+      //   const lng = this.map.minLng + this.map.lngDelta * i;
+      //   arr.push([
+      //     { lat: this.map.minLat, lng },
+      //     { lat: this.map.maxLat, lng }
+      //   ]);
+      // }
+      // return arr;
     },
     markersLine() {
       if (this.markers.length === 0) {
