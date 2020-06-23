@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <section v-show="gameStep === 1" class="app-section start-section">
@@ -22,9 +22,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -106,6 +106,19 @@
             color="#84B132"
             class="user-line"
           />
+        </l-layer-group>
+
+        <l-layer-group>
+          <l-polyline
+            :lat-lngs="latCoords"
+            color="red"
+            weight="0.3"
+          ></l-polyline>
+          <l-polyline
+            :lat-lngs="lngCoords"
+            color="red"
+            weight="0.3"
+          ></l-polyline>
         </l-layer-group>
       </l-map>
 
@@ -801,10 +814,12 @@ export default {
             visible: true
           }
         ],
-        minLat: 53.8058,
-        maxLat: 53.9808,
-        minLng: 27.382,
-        maxLng: 27.844,
+        minLat: 53.8,
+        maxLat: 53.98,
+        minLng: 27.38,
+        maxLng: 27.849,
+        latDelta: 0.005,
+        lngDelta: 0.007,
         options: {
           zoomControl: false,
           attributionControl: false,
@@ -816,8 +831,8 @@ export default {
           max: 15
         },
         bounds: latLngBounds([
-          [53.8058, 27.382],
-          [53.9808, 27.844]
+          [53.8, 27.38], // left-bottom
+          [53.98, 27.849] // top-right
         ]),
         tileUrl:
           "https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuZGxhciIsImEiOiJja2F5NXV5eW4wY3dvMnFxcWl4Z3ZncHprIn0.tIkQNvDbzUyfdUAkDNG7Cg"
@@ -827,7 +842,7 @@ export default {
       userStationsCount: 14,
       iconSize: 20,
       iconAnchor: [20, 51],
-      // cell size = 7x5 [66x35]
+      // cell size = 7x5 [67x36]
 
       popup: {
         show: false,
@@ -1086,6 +1101,36 @@ export default {
     });
   },
   computed: {
+    latCoords() {
+      // cell size = 7x5 [67x36]
+      //minLat: 53.8,
+      //maxLat: 53.98,
+      let arr = [];
+      for (let i = 0; i <= 36; i++) {
+        const lat = this.map.minLat + this.map.latDelta * i;
+        arr.push([
+          { lat, lng: this.map.minLng },
+          { lat, lng: this.map.maxLng }
+        ]);
+      }
+      console.log(arr);
+      return arr;
+    },
+    lngCoords() {
+      // cell size = 7x5 [67x36]
+      //minLat: 53.8,
+      //maxLat: 53.98,
+      let arr = [];
+      for (let i = 0; i <= 67; i++) {
+        const lng = this.map.minLng + this.map.lngDelta * i;
+        arr.push([
+          { lat: this.map.minLat, lng },
+          { lat: this.map.maxLat, lng }
+        ]);
+      }
+      console.log(arr);
+      return arr;
+    },
     markersLine() {
       if (this.markers.length === 0) {
         return [];
