@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     onResize({ width }) {
-      console.log(111);
       const value = width / 1.7647;
       this.ratioHeight = `${value}px`;
     }

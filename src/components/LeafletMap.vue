@@ -7,12 +7,30 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
-    <section v-show="gameStep === 1" class="app-section start-section">
+    <popup-modal
+      v-if="showPasswordInput"
+      @onShowResult="closePopup(true)"
+      @onShowStat="showStat"
+      @onClosePopup="closePopup"
+    >
+      <p slot="header">Антон, введи пароль для получения статистики :)</p>
+      <template slot="body">
+        <input type="password" />
+      </template>
+      <template slot="buttonstat">Показать</template>
+    </popup-modal>
+
+    <section
+      v-shortkey="['ctrl', 'alt', 'space']"
+      @shortkey="theAction"
+      v-show="gameStep === 1"
+      class="app-section start-section"
+    >
       <section-header
         :section-label="inputParams.gameLabel"
         :section-header="inputParams.startHeader"
@@ -22,9 +40,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -107,19 +125,6 @@
             color="#84B132"
             class="user-line"
           />
-        </l-layer-group>
-
-        <l-layer-group>
-          <l-polyline
-            :lat-lngs="latCoords"
-            color="red"
-            weight="0.3"
-          ></l-polyline>
-          <l-polyline
-            :lat-lngs="lngCoords"
-            color="red"
-            weight="0.3"
-          ></l-polyline>
         </l-layer-group>
       </l-map>
 
@@ -292,7 +297,41 @@
       <ui-button button-class="light" @click="runGameAgain"
         >Начать заново</ui-button
       >
+      <ui-button button-class="light" @click="showHotmap"
+        >Показать hotmap</ui-button
+      >
       <div v-if="!isNull(commentsBlock)" v-html="commentsBlock" />
+    </section>
+
+    <section v-if="gameStep === 4" class="app-section">
+      <section-header
+        section-header="Статистика пользовательских точек"
+        section-description="На этой версии карты можно оценить, где больше всего пользователи TUT.BY хотят, чтобы появились новые станции метро"
+      />
+      <l-map
+        :zoom="map.zoom.value"
+        :min-zoom="map.zoom.min"
+        :max-zoom="map.zoom.max"
+        :options="map.options"
+        :bounds="map.bounds"
+        :max-bounds="map.bounds"
+        style="height: 480px; width: 100%;"
+      >
+        <l-tile-layer :url="map.tileUrl" layer-type="base" />
+
+        <l-layer-group>
+          <l-polygon
+            v-for="cell in cellsCoords"
+            :key="cell.id"
+            :lat-lngs="cell.coords"
+            color="#ffc9c9"
+            :opacity="0.8"
+            :weight="1"
+            fillColor="#ffc9c9"
+            :fillOpacity="cell.opacity"
+          />
+        </l-layer-group>
+      </l-map>
     </section>
 
     <sharing-list v-show="gameStep === 3" />
@@ -301,12 +340,14 @@
 
 <script>
 import "leaflet";
+import axios from "axios";
 import { latLngBounds } from "leaflet";
 import {
   LMap,
   LTileLayer,
   LMarker,
   LPolyline,
+  LPolygon,
   LLayerGroup,
   LTooltip,
   LControl,
@@ -766,6 +807,7 @@ export default {
     LTileLayer,
     LMarker,
     LPolyline,
+    LPolygon,
     LLayerGroup,
     LTooltip,
     LControl,
@@ -782,7 +824,14 @@ export default {
   },
   data() {
     return {
+      urlForStatistics:
+        "https://www.tut.by/stat/quiz?answ_num=0&id=1134&stat=1&answ_val=",
+      showPasswordInput: false,
       gameStep: 1,
+      latCount: 67,
+      lngCount: 36,
+      statisticsData: [],
+      statisticsMaxValue: 0,
       inputParams: {},
       simpleMapScreenshoter: null,
       showLoader: false,
@@ -853,6 +902,16 @@ export default {
     };
   },
   methods: {
+    showHotmap() {
+      this.gameStep = 4;
+    },
+    showStat() {
+      this.gameStep = -612479;
+      this.showPasswordInput = false;
+    },
+    theAction() {
+      this.showPasswordInput = true;
+    },
     moveUserMarkerHandler(event, markerId) {
       this.markers.forEach(el => {
         if (el.id === markerId) {
@@ -1040,9 +1099,39 @@ export default {
       this.showLoader = true;
       this.gameStep = 3;
       const that = this;
-      setTimeout(function() {
-        that.getScreenShot();
-      }, 1000);
+      let resultRequests = [];
+
+      this.markers.forEach(el => {
+        let req = function() {
+          return axios.get(`${that.urlForStatistics}${el.cell}`);
+        };
+        resultRequests.push(req());
+      });
+
+      axios.all(resultRequests).then(
+        axios.spread(resp => {
+          const data = resp.data.data;
+          // that.statisticsData = Object.keys(data)
+          //   .map(key => [+key, data[key]])
+          //   .filter(el => !Number.isNaN(el[0]) && el[0] > 0);
+          const total = that.lngCount * that.latCount + 1;
+
+          for (let i = 0; i <= total; i++) {
+            const val = data[i];
+            that.statisticsData.push(val ? val : 0);
+            if (that.statisticsMaxValue < val) that.statisticsMaxValue = val;
+          }
+          // that.statisticsData = Array.from(
+          //   Array(this.latCount * this.lngCount + 1).keys()
+          // ).map(el => (data[el] ? data[el] : 0));
+          // that.statisticsMaxValue = Math.max(...that.statisticsData);
+          that.statisticsData = that.statisticsData.map(
+            el => el / that.statisticsMaxValue
+          );
+
+          setTimeout(() => that.getScreenShot(), 1000);
+        })
+      );
     },
     removeMarker(index) {
       this.markers.splice(index, 1);
@@ -1062,6 +1151,7 @@ export default {
         { duration: 1.5, delay: 2.5, opacity: 1 }
       );
     },
+
     runGameAgain() {
       this.gameStep = 1;
       this.markers = [];
@@ -1069,6 +1159,7 @@ export default {
       this.mapScreenshot = "";
       this.runTonnelAnimation();
     },
+
     getStations1Coords: () => stations.filter(el => el.line === 1),
 
     getStations2Coords: () => stations.filter(el => el.line === 2),
@@ -1112,10 +1203,41 @@ export default {
           ".b-article-details"
         ).innerHTML;
       }
+
       this.runTonnelAnimation();
     });
   },
   computed: {
+    cellsCoords() {
+      return Array.from(Array(this.latCount * this.lngCount).keys()).map(
+        el => ({
+          id: el,
+          coords: [
+            [
+              this.map.maxLat -
+                this.map.latDelta * Math.floor(el / this.latCount),
+              this.map.minLng + this.map.lngDelta * (el % this.latCount)
+            ],
+            [
+              this.map.maxLat -
+                this.map.latDelta * Math.floor(el / this.latCount),
+              this.map.minLng + this.map.lngDelta * ((el % this.latCount) + 1)
+            ],
+            [
+              this.map.maxLat -
+                this.map.latDelta * (Math.floor(el / this.latCount) + 1),
+              this.map.minLng + this.map.lngDelta * ((el % this.latCount) + 1)
+            ],
+            [
+              this.map.maxLat -
+                this.map.latDelta * (Math.floor(el / this.latCount) + 1),
+              this.map.minLng + this.map.lngDelta * (el % this.latCount)
+            ]
+          ],
+          opacity: this.statisticsData[el + 1]
+        })
+      );
+    },
     latCoords() {
       return Array.from(Array(37).keys()).map(el => [
         { lat: this.map.minLat + this.map.latDelta * el, lng: this.map.minLng },

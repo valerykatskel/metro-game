@@ -26,6 +26,12 @@
               <slot name="button"></slot>
             </ui-button>
           </div>
+
+          <div v-if="hasButtonStatSlot" class="app-modal-footer">
+            <ui-button buttonClass="light" @click="$emit('onShowStat')">
+              <slot name="buttonstat"></slot>
+            </ui-button>
+          </div>
         </div>
       </div>
     </div>
@@ -46,6 +52,9 @@ export default {
   computed: {
     hasButtonSlot() {
       return !!this.$slots["button"];
+    },
+    hasButtonStatSlot() {
+      return !!this.$slots["buttonstat"];
     },
     hasBodySlot() {
       return !!this.$slots["body"];
