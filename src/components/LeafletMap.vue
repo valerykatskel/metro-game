@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <popup-modal
@@ -40,9 +40,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -321,7 +321,7 @@
 
         <l-layer-group>
           <l-polygon
-            v-for="cell in cellsCoords"
+            v-for="cell in cellCoords"
             :key="cell.id"
             :lat-lngs="cell.coords"
             color="#ffc9c9"
@@ -364,441 +364,8 @@ import SectionHeader from "./SectionHeader";
 import SharingList from "./SharingList";
 import AnimationStartSlide from "./AnimationStartSlide";
 import UserStationsInfo from "./UserStationsInfo";
-
+import stations from "../assets/stations.json";
 import { gsap } from "gsap";
-
-const stations = [
-  {
-    id: 110,
-    line: 1,
-    tooltip: "Малінаўка (Малиновка)",
-    position: { lat: 53.8498337, lng: 27.4747816 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 111,
-    line: 1,
-    tooltip: "Пятроўшчына (Петровщина)",
-    position: { lat: 53.8645777, lng: 27.4860214 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 112,
-    line: 1,
-    tooltip: "Міхалова (Михалово)",
-    position: { lat: 53.8766884, lng: 27.4969447 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 113,
-    line: 1,
-    tooltip: "Грушаўка (Грушевка)",
-    position: { lat: 53.8861937, lng: 27.5133705 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 114,
-    line: 1,
-    tooltip: "Інстытут Культуры (Институт Культуры)",
-    position: { lat: 53.885906, lng: 27.5406861 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 115,
-    line: 1,
-    tooltip: "Плошча Леніна (Площадь Ленина)",
-    position: { lat: 53.8926399, lng: 27.5476491 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 116,
-    line: 1,
-    tooltip: "Кастрычніцкая (Октябрьская)",
-    position: { lat: 53.902129, lng: 27.5621384 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 117,
-    line: 1,
-    tooltip: "Плошча Перамогі (Площадь Победы)",
-    position: { lat: 53.909505, lng: 27.5762415 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 118,
-    line: 1,
-    tooltip: "Плошча Якуба Коласа (Площадь Якуба Коласа)",
-    position: { lat: 53.9158972, lng: 27.584213 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 119,
-    line: 1,
-    tooltip: "Акадэмія Навук (Академия Наук)",
-    position: { lat: 53.9217671, lng: 27.5992227 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 120,
-    line: 1,
-    tooltip: "Парк Чалюскінцаў (Парк Челюскинцев)",
-    position: { lat: 53.9241679, lng: 27.6133525 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 121,
-    line: 1,
-    tooltip: "Маскоўская (Московская)",
-    position: { lat: 53.9279268, lng: 27.6276219 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 122,
-    line: 1,
-    tooltip: "Усход (Восток)",
-    position: { lat: 53.9344645, lng: 27.651279 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 123,
-    line: 1,
-    tooltip: "Барысаўскі тракт (Борисовский тракт)",
-    position: { lat: 53.9384972, lng: 27.6657629 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 124,
-    line: 1,
-    tooltip: "Уручча (Уручье)",
-    position: { lat: 53.9453522, lng: 27.6878643 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-1"
-  },
-  {
-    id: 210,
-    line: 2,
-    tooltip: "Магілеўская (Могилевская)",
-    position: { lat: 53.8620975, lng: 27.6737612 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 211,
-    line: 2,
-    tooltip: "Аўтазаводская (Автозаводская)",
-    position: { lat: 53.8690757, lng: 27.6485592 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 212,
-    line: 2,
-    tooltip: "Партызанская (Партизанская)",
-    position: { lat: 53.8762394, lng: 27.628963 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 213,
-    line: 2,
-    tooltip: "Трактарны завод (Тракторный завод)",
-    position: { lat: 53.8900888, lng: 27.6144147 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 214,
-    line: 2,
-    tooltip: "Пралетарская (Пролетарская)",
-    position: { lat: 53.8899908, lng: 27.5861388 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 215,
-    line: 2,
-    tooltip: "Першамайская (Первомайская)",
-    position: { lat: 53.8939772, lng: 27.5706518 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 216,
-    line: 2,
-    tooltip: "Купалаўская (Купаловская)",
-    position: { lat: 53.9008743, lng: 27.5618005 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 217,
-    line: 2,
-    tooltip: "Няміга (Немига)",
-    position: { lat: 53.9057729, lng: 27.5539362 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 218,
-    line: 2,
-    tooltip: "Фрунзенская (Фрунзенская)",
-    position: { lat: 53.9053463, lng: 27.5392082 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 219,
-    line: 2,
-    tooltip: "Маладзежная (Молодежная)",
-    position: { lat: 53.90674, lng: 27.5226456 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 220,
-    line: 2,
-    tooltip: "Пушкінская (Пушкинская)",
-    position: { lat: 53.9096567, lng: 27.4970198 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 221,
-    line: 2,
-    tooltip: "Спартыўная (Спортивная)",
-    position: { lat: 53.9084275, lng: 27.4793816 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 222,
-    line: 2,
-    tooltip: "Кунцаўшчына (Кунцевщина)",
-    position: { lat: 53.9062691, lng: 27.4539918 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 223,
-    line: 2,
-    tooltip: "Каменная Горка (Каменная Горка)",
-    position: { lat: 53.9068364, lng: 27.4377001 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-2"
-  },
-  {
-    id: 310,
-    line: 3,
-    tooltip: "Слуцкі Гасцінец (Слуцкий Гостинец)",
-    position: { lat: 53.843596, lng: 27.534163 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 311,
-    line: 3,
-    tooltip: "Немаршанскі парк (Неморшанский парк)",
-    position: { lat: 53.850185, lng: 27.5367486 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 312,
-    line: 3,
-    tooltip: "Аэрадромная (Аэродромная)",
-    position: { lat: 53.8658904, lng: 27.5434113 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 313,
-    line: 3,
-    tooltip: "Кавальская Слабада (Ковальская Слобода)",
-    position: { lat: 53.8777352, lng: 27.5495803 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 314,
-    line: 3,
-    tooltip: "Вакзальная (Вокзальная)",
-    position: { lat: 53.8897063, lng: 27.5474668 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 315,
-    line: 3,
-    tooltip: "Плошча Францішка Багушэвіча (Площадь Франтишка Богушевича)",
-    position: { lat: 53.8964713, lng: 27.5379986 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 316,
-    line: 3,
-    tooltip: "Юбілейная плошча (Юбилейная площадь)",
-    position: { lat: 53.9046542, lng: 27.5402731 },
-    active: true,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 317,
-    line: 3,
-    tooltip: "Прафсаюзная (Профсоюзная)",
-    position: { lat: 53.9122399, lng: 27.5459996 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 318,
-    line: 3,
-    tooltip: "Пярэспа (Переспа)",
-    position: { lat: 53.9176096, lng: 27.5566936 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 319,
-    line: 3,
-    tooltip: "Камароўская (Комаровская)",
-    position: { lat: 53.921328, lng: 27.5676048 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 320,
-    line: 3,
-    tooltip: "Парк Дружбы народаў (Парк Дружбы народов)",
-    position: { lat: 53.9317801, lng: 27.5774378 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 321,
-    line: 3,
-    tooltip: "Івана Мележа (Ивана Мележа)",
-    position: { lat: 53.9431831, lng: 27.5889498 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 322,
-    line: 3,
-    tooltip: "Зялены Луг (Зеленый Луг)",
-    position: { lat: 53.9495401, lng: 27.6066229 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  },
-  {
-    id: 323,
-    line: 3,
-    tooltip: "Лагойская (Логойская)",
-    position: { lat: 53.9558141, lng: 27.6213241 },
-    active: false,
-    draggable: false,
-    visible: true,
-    className: "stations-line-3"
-  }
-];
 
 export default {
   name: "LeafletMap",
@@ -831,6 +398,7 @@ export default {
       latCount: 67,
       lngCount: 36,
       statisticsData: [],
+      cellCoords: [],
       statisticsMaxValue: 0,
       inputParams: {},
       simpleMapScreenshoter: null,
@@ -892,8 +460,6 @@ export default {
       userStationsCount: 14,
       iconSize: 20,
       iconAnchor: [20, 51],
-      // cell size = 7x5 [67x36]
-
       popup: {
         show: false,
         showButton: false,
@@ -901,6 +467,7 @@ export default {
       }
     };
   },
+
   methods: {
     showHotmap() {
       this.gameStep = 4;
@@ -910,7 +477,7 @@ export default {
       this.showPasswordInput = false;
     },
     theAction() {
-      this.showPasswordInput = true;
+      this.showPasswstordInput = true;
     },
     moveUserMarkerHandler(event, markerId) {
       this.markers.forEach(el => {
@@ -919,10 +486,12 @@ export default {
         }
       });
     },
+
     closePopup(showResult) {
       this.popup.show = false;
       if (showResult) this.showResults();
     },
+
     handleResult(res) {
       const img = new Image();
       const that = this;
@@ -982,12 +551,15 @@ export default {
       };
       img.src = res.secure_url;
     },
+
     onMapClick(e) {
       if (this.userStationsLeft > 0) this.addMarker(e);
     },
+
     createUserMarkerTooltip(pos) {
       return `lat: ${pos.lat} | lng: ${pos.lng}`;
     },
+
     getScreenShot() {
       const comments = document.querySelector(".b-comments");
       if (!this.isNull(comments)) {
@@ -1048,6 +620,7 @@ export default {
           console.error(e.toString());
         });
     },
+
     canAddMarker(lat, lng) {
       return (
         lat >= this.map.minLat &&
@@ -1056,6 +629,7 @@ export default {
         lng <= this.map.maxLng
       );
     },
+
     getCellNum(lat, lng) {
       return (
         Math.floor((lng - this.map.minLng) / 0.007) +
@@ -1063,6 +637,7 @@ export default {
         Math.floor(36 - (lat - this.map.minLat) / 0.005) * 67
       );
     },
+
     addMarker(e) {
       const position = [e.latlng.lat, e.latlng.lng];
 
@@ -1092,9 +667,11 @@ export default {
         this.popup.show = true;
       }
     },
+
     removeLast() {
       this.markers.pop();
     },
+
     showResults() {
       this.showLoader = true;
       this.gameStep = 3;
@@ -1128,11 +705,13 @@ export default {
           that.statisticsData = that.statisticsData.map(
             el => el / that.statisticsMaxValue
           );
+          that.cellCoords = that.getCellsCoords();
 
           setTimeout(() => that.getScreenShot(), 1000);
         })
       );
     },
+
     removeMarker(index) {
       this.markers.splice(index, 1);
     },
@@ -1184,31 +763,9 @@ export default {
 
     isNull(val) {
       return typeof val === "object" && !val;
-    }
-  },
+    },
 
-  mounted() {
-    this.$nextTick(() => {
-      this.inputParams = window.inputData;
-      let sHeader = this.inputParams.startHeader;
-      let sMeta = this.inputParams.startMeta;
-
-      if (sHeader === undefined || sHeader.length === 0) {
-        this.inputParams.startHeader = document
-          .querySelector(".m_header h1")
-          .innerText.trim();
-      }
-      if (sMeta === undefined || sMeta.length === 0) {
-        this.inputParams.startMeta = document.querySelector(
-          ".b-article-details"
-        ).innerHTML;
-      }
-
-      this.runTonnelAnimation();
-    });
-  },
-  computed: {
-    cellsCoords() {
+    getCellsCoords() {
       return Array.from(Array(this.latCount * this.lngCount).keys()).map(
         el => ({
           id: el,
@@ -1237,7 +794,30 @@ export default {
           opacity: this.statisticsData[el + 1]
         })
       );
-    },
+    }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.inputParams = window.inputData;
+      let sHeader = this.inputParams.startHeader;
+      let sMeta = this.inputParams.startMeta;
+
+      if (sHeader === undefined || sHeader.length === 0) {
+        this.inputParams.startHeader = document
+          .querySelector(".m_header h1")
+          .innerText.trim();
+      }
+      if (sMeta === undefined || sMeta.length === 0) {
+        this.inputParams.startMeta = document.querySelector(
+          ".b-article-details"
+        ).innerHTML;
+      }
+
+      this.runTonnelAnimation();
+    });
+  },
+  computed: {
     latCoords() {
       return Array.from(Array(37).keys()).map(el => [
         { lat: this.map.minLat + this.map.latDelta * el, lng: this.map.minLng },
