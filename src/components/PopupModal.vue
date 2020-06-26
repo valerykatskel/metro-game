@@ -118,7 +118,7 @@ export default {
     &:first-child {
       margin-top: 0;
     }
-    margin: 15px 0 0 0;
+    margin: 0;
     font-size: 17px;
     line-height: 23px;
     font-weight: bold;

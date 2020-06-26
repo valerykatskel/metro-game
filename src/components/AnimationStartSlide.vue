@@ -44,9 +44,8 @@ export default {
   position: relative;
   height: 340px;
   // ratio = 1,7647
-  margin: 0;
+  margin: 0 35px 20px 35px;
   overflow: hidden;
-  margin-bottom: 20px;
 
   .metro-bg-01,
   .metro-bg-02,
@@ -78,9 +77,10 @@ export default {
   }
 }
 @media (min-width: 481px) {
-  .start-animation-metro {
-    margin: 0 60px;
-    margin-bottom: 30px;
+  html:not(.smart) {
+    .start-animation-metro {
+      margin: 0 60px 30 60px;
+    }
   }
 }
 </style>

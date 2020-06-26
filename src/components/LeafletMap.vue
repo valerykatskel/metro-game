@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">
-        {{ inputParams.finalPopupButton }}
-      </template>
+      <template v-if="popup.showButton" slot="button">{{
+        inputParams.finalPopupButton
+      }}</template>
     </popup-modal>
 
     <popup-modal
@@ -40,9 +40,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
-        inputParams.startButton
-      }}</ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">
+        {{ inputParams.startButton }}
+      </ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -293,14 +293,15 @@
           </div>
         </div>
       </div>
-
-      <ui-button button-class="light" @click="runGameAgain"
-        >Начать заново</ui-button
-      >
-      <ui-button button-class="light" @click="showHotmap"
-        >Показать hotmap</ui-button
-      >
-      <div v-if="!isNull(commentsBlock)" v-html="commentsBlock" />
+      <div class="game-results-buttons">
+        <ui-button button-class="light" @click="runGameAgain"
+          >Начать заново</ui-button
+        >
+        <ui-button button-class="light" @click="showHotmap"
+          >Показать hotmap</ui-button
+        >
+        <div v-if="!isNull(commentsBlock)" v-html="commentsBlock" />
+      </div>
     </section>
 
     <section v-if="gameStep === 4" class="app-section">
@@ -939,17 +940,18 @@ export default {
   }
 }
 .game-actions {
-  margin-top: 22px;
+  margin-top: 20px;
   display: flex;
 
   .button {
     width: 50%;
+    padding: 0;
 
     &:first-child {
-      margin-right: 12px;
+      margin-right: 5px;
     }
     &:last-child {
-      margin-left: 12px;
+      margin-left: 5px;
     }
     &.green {
       background-color: #9fc226;
@@ -960,8 +962,8 @@ export default {
 .game-results {
   display: flex;
   flex-direction: column;
-  margin-top: 25px;
-  margin-bottom: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
   .result-map {
     box-sizing: border-box;
@@ -999,6 +1001,14 @@ export default {
     }
   }
 }
+.game-results-buttons {
+  .button {
+    margin-top: 15px;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
 .game-result-description {
   font-size: 16px;
   line-height: 19px;
@@ -1027,7 +1037,7 @@ export default {
 .app-section {
   .section-header {
     text-align: left;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 
     .section-label {
       color: #808080;
@@ -1099,12 +1109,18 @@ export default {
       }
     }
   }
+  .game-results-buttons {
+    .button {
+      margin-top: 0;
+    }
+  }
 }
 
 @media (min-width: 481px) {
   html:not(.smart) {
     .app-section {
       .section-header {
+        margin-bottom: 25px;
         .section-label {
           text-align: center;
         }
@@ -1124,6 +1140,21 @@ export default {
             line-height: 25px;
             margin-top: 20px;
           }
+        }
+      }
+    }
+    .game-results {
+      margin-top: 25px;
+      margin-bottom: 30px;
+    }
+    .game-actions {
+      margin-top: 25px;
+      .button {
+        &:first-child {
+          margin-right: 10px;
+        }
+        &:last-child {
+          margin-left: 10px;
         }
       }
     }

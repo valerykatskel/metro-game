@@ -19,7 +19,7 @@ export default {
 
 <style lang="scss">
 .stations-count {
-  margin: 5px 0 0 5px;
+  margin: 0;
   background: #fff;
   border-radius: 3px;
   height: 35px;
@@ -40,6 +40,13 @@ export default {
     background: #84b132;
     color: #fff;
     line-height: 25px;
+  }
+}
+@media (min-width: 481px) {
+  html:not(.smart) {
+    .stations-count {
+      margin: 5px 0 0 5px;
+    }
   }
 }
 </style>
