@@ -7,9 +7,9 @@
       @onClosePopup="closePopup"
     >
       <p slot="header">{{ popup.text }}</p>
-      <template v-if="popup.showButton" slot="button">{{
-        inputParams.finalPopupButton
-      }}</template>
+      <template v-if="popup.showButton" slot="button">
+        {{ inputParams.finalPopupButton }}
+      </template>
     </popup-modal>
 
     <popup-modal
@@ -40,9 +40,9 @@
 
       <animation-start-slide />
 
-      <ui-button button-class="start-game-button start" @click="gameStep = 2">
-        {{ inputParams.startButton }}
-      </ui-button>
+      <ui-button button-class="start-game-button start" @click="gameStep = 2">{{
+        inputParams.startButton
+      }}</ui-button>
     </section>
 
     <section v-if="gameStep === 2" class="app-section">
@@ -588,7 +588,7 @@ export default {
         .then(blob => {
           const reader = new FileReader();
           reader.onload = function() {
-            const base64Str = reader.result.split(",")[1];
+            const [, base64Str] = reader.result.split(",");
 
             var myHeaders = new Headers();
             myHeaders.append(
