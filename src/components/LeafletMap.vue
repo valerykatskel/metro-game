@@ -109,11 +109,9 @@
             @update:latLng="moveUserMarkerHandler($event, marker.id)"
           >
             <l-icon
-              :icon-size="dynamicSize"
               :icon-anchor="dynamicAnchor"
-              :icon-url="marker.icon"
-              :icon-retina-url="marker.icon2x"
               :className="marker.className"
+              iconUrl="/public/images/green-market.png"
             >
               <span>{{ marker.id }}</span>
             </l-icon>
@@ -144,7 +142,7 @@
         :section-description="inputParams.finalText"
       />
 
-      <div class="game-results">
+      <div class="game-results" id="sharingImage">
         <div class="result-map user-map">
           <!-- <div class="user-map-wrapper">
             <img :src="mapScreenshot" alt />
@@ -357,7 +355,6 @@ import {
   LCircleMarker
 } from "vue2-leaflet";
 
-import "leaflet-simple-map-screenshoter";
 import UiButton from "./ui/UiButton";
 import PopupModal from "./PopupModal";
 import AppLoader from "./AppLoader";
@@ -367,6 +364,7 @@ import AnimationStartSlide from "./AnimationStartSlide";
 import UserStationsInfo from "./UserStationsInfo";
 import stations from "../assets/stations.json";
 import { gsap } from "gsap";
+import domtoimage from "dom-to-image";
 
 export default {
   name: "LeafletMap",
@@ -571,55 +569,37 @@ export default {
           this.commentsBlock = commentsBlock;
         }
       }
-      const map = this.$refs.map.mapObject;
+
+      const node = document.getElementById("sharingImage");
       const that = this;
-      if (!this.simpleMapScreenshoter) {
-        const pluginOptions = {
-          hidden: true, // hide screen icon
-          screenName: () => new Date().toDateString() // string or function
-        };
-        this.simpleMapScreenshoter = window.L.simpleMapScreenshoter(
-          pluginOptions
-        ).addTo(map);
-      }
+      domtoimage
+        .toPng(node)
+        .then(resultPng => {
+          const [, base64Str] = resultPng.split(",");
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-      this.simpleMapScreenshoter
-        .takeScreen("blob")
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onload = function() {
-            const [, base64Str] = reader.result.split(",");
-
-            var myHeaders = new Headers();
-            myHeaders.append(
-              "Content-Type",
-              "application/x-www-form-urlencoded"
-            );
-
-            var urlencoded = new URLSearchParams();
-            urlencoded.append("base64Str", base64Str);
-            urlencoded.append("upldf", "metro-game");
-            var requestOptions = {
-              method: "POST",
-              headers: myHeaders,
-              body: urlencoded,
-              redirect: "follow"
-            };
-            //const urlToCloudinaryUploader = "http://localhost:8088/upload";
-            const urlToCloudinaryUploader =
-              "https://tut-quiz.herokuapp.com/upload";
-            fetch(urlToCloudinaryUploader, requestOptions)
-              .then(response => response.json())
-              .then(result => {
-                that.handleResult(result);
-              })
-              .catch(error => console.log(error));
+          var urlencoded = new URLSearchParams();
+          urlencoded.append("base64Str", base64Str);
+          urlencoded.append("upldf", "metro-game");
+          var requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: "follow"
           };
-          reader.readAsDataURL(blob);
+          //const urlToCloudinaryUploader = "http://localhost:8088/upload";
+          const urlToCloudinaryUploader =
+            "https://tut-quiz.herokuapp.com/upload";
+          fetch(urlToCloudinaryUploader, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+              console.log(result);
+              that.handleResult(result);
+            })
+            .catch(error => console.log(error));
         })
-        .catch(e => {
-          console.error(e.toString());
-        });
+        .catch(error => console.error("oops, something went wrong!", error));
     },
 
     canAddMarker(lat, lng) {
@@ -651,9 +631,6 @@ export default {
           active: true,
           draggable: true,
           visible: true,
-          icon: "https://img.tyt.by/news/special/metro-game/green-marker.png",
-          icon2x:
-            "https://img.tyt.by/news/special/metro-game/green-marker@2x.png",
           className: "user-marker"
         };
         this.markers.push(newMarker);
